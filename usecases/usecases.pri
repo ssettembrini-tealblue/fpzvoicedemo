@@ -1,15 +1,18 @@
 !android {
     QT += serialbus
+    QT += websockets
     qtConfig(modbus-serialport): QT += serialport
 
     HEADERS += \
 		$$PWD/client_actions.h \
         $$PWD/inveor_store.h \
+        $$PWD/voice_store.h \
         $$PWD/../libs/inveor-lib/src/inveor_inverter.h \
         $$PWD/../libs/inveor-lib/src/writeregistermodel.h
 
     SOURCES += \
         $$PWD/inveor_store.cpp \
+        $$PWD/voice_store.cpp \
         $$PWD/../libs/inveor-lib/src/inveor_inverter.cpp \
         $$PWD/../libs/inveor-lib/src/writeregistermodel.cpp
 }

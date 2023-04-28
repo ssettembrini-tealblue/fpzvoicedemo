@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QJsonDocument>
-#include <QtWebSockets/QWebSocket>
+#include <QWebSocket>
 #include "client_actions.h"
 
 enum class TypeMsg

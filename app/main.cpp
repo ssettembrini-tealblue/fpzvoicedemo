@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<WriteRegisterModel*>();
     
     engine.rootContext()->setContextProperty("inveorStore", inveorStore);
+    engine.rootContext()->setContextProperty("voiceStore", voiceStore);
     
     QUrl url;
     if (uiDemoMode) {
