@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="ConnectToBlowerViaBT" qt:editorversion="4.13.2" initial="checkingBtIsActive">
+    <qt:editorinfo initialGeometry="120.33;102.52;-20;-20;40;40"/>
+    <final id="deviceWasPaired">
+        <qt:editorinfo scenegeometry="120.33;665.71;100.33;645.71;40;40" geometry="120.33;665.71;-20;-20;40;40"/>
+    </final>
+    <state id="checkingBtIsActive">
+        <qt:editorinfo scenegeometry="296.22;102.52;271.09;52.52;155.17;100" geometry="296.22;102.52;-25.13;-50;155.17;100"/>
+        <transition type="external" event="btReceiver_notActivated" target="wantActivateBt"/>
+        <transition type="external" event="btReceiver_activated" target="scanningAvailableDevices"/>
+    </state>
+    <state id="wantActivateBt">
+        <qt:editorinfo scenegeometry="647.35;102.52;587.35;52.52;141.54;100" geometry="647.35;102.52;-60;-50;141.54;100"/>
+        <transition type="external" event="activateBtReceiver" target="checkingBtIsActive">
+            <qt:editorinfo movePoint="0;12.23" endTargetFactors="83.94;70.60" startTargetFactors="8.22;69.68"/>
+        </transition>
+    </state>
+    <state id="scanningAvailableDevices">
+        <qt:editorinfo scenegeometry="450.88;282.39;240.69;232.39;215.98;100" geometry="450.88;282.39;-210.19;-50;215.98;100"/>
+        <transition type="external" event="availableDevices_noneFound" target="noDevicesAvailable"/>
+        <transition type="external" event="availableDevices_someFound" target="devicesAvailable"/>
+    </state>
+    <state id="noDevicesAvailable">
+        <qt:editorinfo scenegeometry="678.95;282.39;618.95;232.39;175.18;100" geometry="678.95;282.39;-60;-50;175.18;100"/>
+        <transition type="external" event="scanAvailableDevices" target="scanningAvailableDevices">
+            <qt:editorinfo movePoint="1.02;14.27" endTargetFactors="88.53;74.61" startTargetFactors="5.73;72.82"/>
+        </transition>
+    </state>
+    <state id="devicesAvailable">
+        <qt:editorinfo scenegeometry="315.48;468.95;255.48;418.95;186.39;100" geometry="315.48;468.95;-60;-50;186.39;100"/>
+        <transition type="external" event="selectDevice" target="wantPairDevice">
+            <qt:editorinfo movePoint="-27.53;3.06"/>
+        </transition>
+    </state>
+    <state id="wantPairDevice">
+        <qt:editorinfo scenegeometry="684.05;468.95;624.05;418.95;164.99;100" geometry="684.05;468.95;-60;-50;164.99;100"/>
+        <transition type="external" event="pairDevice" target="pairingDevice">
+            <qt:editorinfo movePoint="-18.35;-20.39"/>
+        </transition>
+    </state>
+    <state id="pairingDevice">
+        <qt:editorinfo scenegeometry="343.58;609.83;283.58;559.83;174.17;100" geometry="343.58;609.83;-60;-50;174.17;100"/>
+        <transition type="external" event="device_notPaired" target="deviceWasNotPaired"/>
+        <transition type="external" event="device_paired" target="deviceWasPaired">
+            <qt:editorinfo movePoint="-3.06;-40.78"/>
+        </transition>
+    </state>
+    <state id="deviceWasNotPaired">
+        <qt:editorinfo scenegeometry="678.96;609.83;618.96;559.83;201.71;100" geometry="678.96;609.83;-60;-50;201.71;100"/>
+    </state>
+</scxml>
