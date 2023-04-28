@@ -4,19 +4,30 @@
 VoiceStore::VoiceStore(ClientActions* clientActions,QObject *parent)
     : QObject(parent)
 {
+    qDebug() << m_webSocket.state();
     m_clientActions= clientActions;
-    setConnectionAddress("ws://"+connectionIp()+":" +QString(connectionPort())+"/core");
+
+
+    setConnectionAddress("ws://"+connectionIp()+":" + QString::number(connectionPort()) +"/core");
+    qDebug() << connectionAddress();
+
+
+
+
     connect(&m_webSocket, &QWebSocket::connected, this, &VoiceStore::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &VoiceStore::onDisconnected);
+
     connectWebsocket();
+
+
 }
 
-QUrl VoiceStore::connectionAddress() const
+QString VoiceStore::connectionAddress() const
 {
     return m_connectionAddress;
 }
 
-void VoiceStore::setConnectionAddress(const QUrl &newConnectionAddress)
+void VoiceStore::setConnectionAddress(const QString &newConnectionAddress)
 {
     if (m_connectionAddress == newConnectionAddress)
         return;
@@ -39,7 +50,8 @@ void VoiceStore::setConnectionPort(const int &newConnectionPort)
 
 void VoiceStore::connectWebsocket()
 {
-    m_webSocket.open(connectionAddress());
+    QUrl url(connectionAddress());
+    m_webSocket.open(url);
 
 }
 
@@ -64,6 +76,7 @@ void VoiceStore::setConnectionIp(const QString &newConnectionIp)
 void VoiceStore::onConnected()
 {
     qDebug() << "WebSocket connected";
+    qDebug() << m_webSocket.state();
     connect(&m_webSocket, &QWebSocket::textMessageReceived,
             this, &VoiceStore::onMsgListened);
     //m_webSocket.sendTextMessage(QStringLiteral("Hello, world!"));
@@ -72,24 +85,44 @@ void VoiceStore::onConnected()
 void VoiceStore::onDisconnected()
 {
     qDebug() << "WebSocket disconnected";
+    qDebug() << m_webSocket.state();
 }
 
 void VoiceStore::onMsgListened(QString message)
 {
-    qDebug() << "Message received:" << message;
+    qDebug() << m_webSocket.state();
+    qDebug().noquote() << "Message received:" << message;
     if(parseMsg(message)){
-         qDebug() << "Performed action";
+        qDebug() << "Performed action";
     }
 }
 
 bool VoiceStore::parseMsg(QString message)
 {
     //HERE PARSE MSG FROM WEBSOCKET
-    QVariant fullMessage = QVariant(message);
-    QJsonDocument jsonResponse = QJsonDocument::fromVariant(fullMessage);
+    //QVariant fullMessage = QVariant(message);
+    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());//fromVariant(fullMessage);
+    QJsonObject json = doc.object();
 
-    uint value=0;//here parse from the json the actual value;
-    int translatedMsg= translateMsg(message);
+    QJsonValue valuetype = json.value(QString("type"));
+    QJsonValue typeobj = valuetype["type"];
+    qDebug().noquote() << typeobj.toString();
+    if(typeobj.toString()!="fpzcontrol") return false;
+    QJsonValue valuedata = json.value(QString("data"));
+    //qDebug().noquote() << valuedata;
+
+    QJsonObject item = valuedata.toObject();
+    //qDebug().noquote() << tr("value: ") << item["value"].toString();
+    qDebug().noquote() << tr("action: ") << item["action"].toString();
+
+
+    qDebug().noquote() << json["type"].toString();
+
+
+    uint value=item["value"].toInt();//0;//here parse from the json the actual value;
+    qDebug() << value;
+
+    int translatedMsg=translateMsg(json["type"].toString());
 
     switch(translatedMsg){
     case 0:
@@ -97,22 +130,27 @@ bool VoiceStore::parseMsg(QString message)
         break;
     case 1:
         m_clientActions->startBlower();
+        qDebug() << "Started blower";
         return true;
         break;
     case 2:
         m_clientActions->stopBlower();
+        qDebug() << "Stopped blower";
         return true;
         break;
     case 3:
         m_clientActions->writeNominalFrequency(value);
+        qDebug() << "Written nominal frequency";
         return true;
         break;
     case 4:
         m_clientActions->increaseNominalFrequency(value);
+        qDebug() << "Increased nominal frequency";
         return true;
         break;
     case 5:
         m_clientActions->decreaseNominalFrequency(value);
+        qDebug() << "Decreased nominal frequency";
         return true;
         break;
     default:

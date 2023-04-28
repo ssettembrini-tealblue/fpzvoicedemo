@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QTimer>
 #include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QWebSocket>
 #include "client_actions.h"
 
@@ -23,13 +25,13 @@ class VoiceStore : public QObject
     Q_OBJECT
     Q_PROPERTY(QString connectionIp READ connectionIp WRITE setConnectionIp NOTIFY connectionIpChanged)
     Q_PROPERTY(int connectionPort READ connectionPort WRITE setConnectionPort NOTIFY connectionPortChanged)
-    Q_PROPERTY(QUrl connectionAddress READ connectionAddress WRITE setConnectionAddress NOTIFY connectionAddressChanged)
+    Q_PROPERTY(QString connectionAddress READ connectionAddress WRITE setConnectionAddress NOTIFY connectionAddressChanged)
 
 public:
     explicit VoiceStore(ClientActions* clientActions,QObject *parent = nullptr);
 
-    QUrl connectionAddress() const;
-    void setConnectionAddress(const QUrl &newConnectionAddress);
+    QString connectionAddress() const;
+    void setConnectionAddress(const QString &newConnectionAddress);
 
     int connectionPort() const;
     void setConnectionPort(const int &newConnectionPort);
@@ -55,9 +57,9 @@ private:
     int translateMsg(QString message);
 
     QWebSocket m_webSocket;
-    QUrl m_connectionAddress;
+    QString m_connectionAddress;
     int m_connectionPort{8181};
-    QString m_connectionIp{"192.168.188.36"};
+    QString m_connectionIp{"10.203.180.2"}; // chipsee ip
 
     ClientActions* m_clientActions;
 };
