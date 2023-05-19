@@ -44,11 +44,11 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::startBlower,this,[this](){
-        if(actualFrequency()==0){//if(nomFrequency()==0){
+        //if(actualFrequency()==0){//if(nomFrequency()==0){
             setNominalFrequency(minFrequency());
             //m_inveor_inverter.writeNominalFrequency(minFrequency());
             emit commStatusChanged();
-        }
+        //}
     });
     connect(m_clientActions, &ClientActions::increaseNominalFrequency,this,[this](uint step){
         setNominalFrequency(nomFreq() + step);
