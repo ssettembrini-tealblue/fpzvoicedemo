@@ -129,28 +129,28 @@ bool VoiceStore::parseMsg(QString message)
 
     switch(translatedMsg){
     case 0:
-        qDebug() << "unknown cmd";
+        qDebug() << "unknown cmd" << "\n";
         return false;
     case 1:
         emit m_clientActions->startBlower();
-        qDebug() << "Started blower";
+        qDebug() << "Started blower" << "\n";
 
         return true;
     case 2:
         emit m_clientActions->stopBlower();
-        qDebug() << "Stopped blower";
+        qDebug() << "Stopped blower" << "\n";
         return true;
     case 3:
         emit m_clientActions->writeNominalFrequency(value);
-        qDebug() << "Written nominal frequency";
+        qDebug() << "Written nominal frequency" << "\n";
         return true;
     case 4:
         emit m_clientActions->increaseNominalFrequency(value);
-        qDebug() << "Increased nominal frequency";
+        qDebug() << "Increased nominal frequency" << "\n";
         return true;
     case 5:
         emit m_clientActions->decreaseNominalFrequency(value);
-        qDebug() << "Decreased nominal frequency";
+        qDebug() << "Decreased nominal frequency" << "\n";
         return true;
     default:
         return false;
