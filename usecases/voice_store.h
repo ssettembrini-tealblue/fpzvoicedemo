@@ -59,7 +59,7 @@ private:
     QWebSocket m_webSocket;
     QString m_connectionAddress;
     int m_connectionPort{8181};
-    QString m_connectionIp{"10.203.180.2"}; // chipsee ip
+    QString m_connectionIp{"192.168.1.111"};//"10.203.180.2"}; // chipsee ip
 
     ClientActions* m_clientActions;
 };
