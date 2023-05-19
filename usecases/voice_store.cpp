@@ -129,27 +129,27 @@ bool VoiceStore::parseMsg(QString message)
 
         break;
     case 1:
-        m_clientActions->startBlower();
+        emit m_clientActions->startBlower();
         qDebug() << "Started blower";
         return true;
         break;
     case 2:
-        m_clientActions->stopBlower();
+        emit m_clientActions->stopBlower();
         qDebug() << "Stopped blower";
         return true;
         break;
     case 3:
-        m_clientActions->writeNominalFrequency(value);
+        emit m_clientActions->writeNominalFrequency(value);
         qDebug() << "Written nominal frequency";
         return true;
         break;
     case 4:
-        m_clientActions->increaseNominalFrequency(value);
+        emit m_clientActions->increaseNominalFrequency(value);
         qDebug() << "Increased nominal frequency";
         return true;
         break;
     case 5:
-        m_clientActions->decreaseNominalFrequency(value);
+        emit m_clientActions->decreaseNominalFrequency(value);
         qDebug() << "Decreased nominal frequency";
         return true;
         break;
