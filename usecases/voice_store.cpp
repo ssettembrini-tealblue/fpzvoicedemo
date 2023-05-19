@@ -99,7 +99,7 @@ void VoiceStore::onMsgListened(QString message)
 
 bool VoiceStore::parseMsg(QString message)
 {
-    qDebug () << Q_FUNC_INFO;
+    qDebug () << Q_FUNC_INFO << "\n";
     //HERE PARSE MSG FROM WEBSOCKET
     //QVariant fullMessage = QVariant(message);
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());//fromVariant(fullMessage);
