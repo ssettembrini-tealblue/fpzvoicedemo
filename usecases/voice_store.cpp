@@ -99,6 +99,7 @@ void VoiceStore::onMsgListened(QString message)
 
 bool VoiceStore::parseMsg(QString message)
 {
+    qDebug () << Q_FUNC_INFO;
     //HERE PARSE MSG FROM WEBSOCKET
     //QVariant fullMessage = QVariant(message);
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());//fromVariant(fullMessage);
@@ -128,7 +129,7 @@ bool VoiceStore::parseMsg(QString message)
 
     switch(translatedMsg){
     case 0:
-
+        //qDebug() <<
         break;
     case 1:
         emit m_clientActions->startBlower();
