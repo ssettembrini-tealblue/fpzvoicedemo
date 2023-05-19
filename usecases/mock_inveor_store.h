@@ -31,6 +31,8 @@ public:
     void readValues();
 
     void setNominalFrequency(uint nominalFrequency);
+    void setMotorCurrent(uint motCur);
+    void setMotorPower(uint motPow);
 
     QString connStatus();
     QString msgStatus();

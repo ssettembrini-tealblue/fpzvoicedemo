@@ -35,28 +35,38 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::writeNominalFrequency,this,[this](uint value){
         setNominalFrequency(value);
+        setMotorPower(77);
+        setMotorCurrent(77);
         //m_inveor_inverter.writeNominalFrequency(value);
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::stopBlower,this,[this](){
         setNominalFrequency(0);
+        setMotorPower(77);
+        setMotorCurrent(77);
         //m_inveor_inverter.writeNominalFrequency(0);
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::startBlower,this,[this](){
         //if(actualFrequency()==0){//if(nomFrequency()==0){
             setNominalFrequency(minFrequency());
+            setMotorPower(77);
+            setMotorCurrent(77);
             //m_inveor_inverter.writeNominalFrequency(minFrequency());
             emit commStatusChanged();
         //}
     });
     connect(m_clientActions, &ClientActions::increaseNominalFrequency,this,[this](uint step){
         setNominalFrequency(nomFreq() + step);
+        setMotorPower(77);
+        setMotorCurrent(77);
         //m_inveor_inverter.writeNominalFrequency(nomFreq());
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::decreaseNominalFrequency,this,[this](uint step){
         setNominalFrequency(nomFreq() - step);
+        setMotorPower(77);
+        setMotorCurrent(77);
         //m_inveor_inverter.writeNominalFrequency(nomFreq());
         emit commStatusChanged();
     });
@@ -204,6 +214,18 @@ void MockInveorStore::setNominalFrequency(uint nominalFrequency)
 
     m_nomFreq = nominalFrequency;
     emit nominalFrequencyChanged(m_nomFreq);
+}
+
+void MockInveorStore::setMotorCurrent(uint motCur)
+{
+    m_motorCurrent = motCur;
+    emit motorCurrentChanged();
+}
+
+void MockInveorStore::setMotorPower(uint motPow)
+{
+    m_motorVoltage=motPow;
+    emit motorVoltageChanged();
 }
 
 void MockInveorStore::readValues(){
