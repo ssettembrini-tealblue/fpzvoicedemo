@@ -5,6 +5,15 @@ import FPZBlowerMonitorConf 1.0
 import "../FPZBlowerMonitorConfUI"
 
 ReadCurrentInverterParamsTpl {
+
+    Text{
+        id: txtDebug
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 60
+        text: voiceStore.debug
+    }
+
     id: readCurrentParamsView
     width: Constants.width
     height: Constants.height

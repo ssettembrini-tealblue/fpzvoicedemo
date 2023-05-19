@@ -26,6 +26,7 @@ class VoiceStore : public QObject
     Q_PROPERTY(QString connectionIp READ connectionIp WRITE setConnectionIp NOTIFY connectionIpChanged)
     Q_PROPERTY(int connectionPort READ connectionPort WRITE setConnectionPort NOTIFY connectionPortChanged)
     Q_PROPERTY(QString connectionAddress READ connectionAddress WRITE setConnectionAddress NOTIFY connectionAddressChanged)
+    Q_PROPERTY(QString debug READ debug WRITE setDebug NOTIFY debugChanged)
 
 public:
     explicit VoiceStore(ClientActions* clientActions,QObject *parent = nullptr);
@@ -39,11 +40,16 @@ public:
     QString connectionIp() const;
     void setConnectionIp(const QString &newConnectionIp);
 
+    QString debug() const;
+    void setDebug(const QString &newDebug);
+
 signals:
     void connectionAddressChanged();
     void connectionPortChanged();
 
     void connectionIpChanged();
+
+    void debugChanged();
 
 private:
     void connectWebsocket();
@@ -62,6 +68,7 @@ private:
     QString m_connectionIp{"192.168.1.111"};//"10.203.180.2"}; // chipsee ip
 
     ClientActions* m_clientActions;
+    QString m_debug;
 };
 
 #endif // VOICE_STORE_H

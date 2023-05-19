@@ -124,6 +124,8 @@ bool VoiceStore::parseMsg(QString message)
 
     int translatedMsg=translateMsg(json["type"].toString());
 
+    setDebug(message.toUtf8());
+
     switch(translatedMsg){
     case 0:
 
@@ -131,6 +133,7 @@ bool VoiceStore::parseMsg(QString message)
     case 1:
         emit m_clientActions->startBlower();
         qDebug() << "Started blower";
+
         return true;
         break;
     case 2:
@@ -177,3 +180,16 @@ int VoiceStore::translateMsg(QString message)
 
 }
 
+
+QString VoiceStore::debug() const
+{
+    return m_debug;
+}
+
+void VoiceStore::setDebug(const QString &newDebug)
+{
+    if (m_debug == newDebug)
+        return;
+    m_debug = newDebug;
+    emit debugChanged();
+}
