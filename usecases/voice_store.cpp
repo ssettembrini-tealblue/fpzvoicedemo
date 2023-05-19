@@ -106,9 +106,9 @@ bool VoiceStore::parseMsg(QString message)
     QJsonObject json = doc.object();
 
     QJsonValue valuetype = json.value("type");
-    QJsonValue typeobj = valuetype["type"];
-    qDebug() << typeobj.toString() << "\n";
-    if(typeobj.toString()!="fpzcontrol")
+    //QJsonValue typeobj = valuetype["type"];
+    qDebug() << valuetype.toString() << "\n";
+    if(valuetype.toString()!="fpzcontrol")
         return false;
     QJsonValue valuedata = json.value("data");
     //qDebug().noquote() << valuedata;
