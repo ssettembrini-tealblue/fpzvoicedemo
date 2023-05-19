@@ -107,17 +107,17 @@ bool VoiceStore::parseMsg(QString message)
 
     QJsonValue valuetype = json.value(QString("type"));
     QJsonValue typeobj = valuetype["type"];
-    qDebug().noquote() << typeobj.toString();
+    qDebug() << typeobj.toString();
     if(typeobj.toString()!="fpzcontrol") return false;
     QJsonValue valuedata = json.value(QString("data"));
     //qDebug().noquote() << valuedata;
 
     QJsonObject item = valuedata.toObject();
     //qDebug().noquote() << tr("value: ") << item["value"].toString();
-    qDebug().noquote() << tr("action: ") << item["action"].toString();
+    qDebug() << tr("action: ") << item["action"].toString();
 
 
-    qDebug().noquote() << json["type"].toString();
+    qDebug() << json["type"].toString();
 
 
     uint value=item["value"].toInt();//0;//here parse from the json the actual value;
@@ -153,6 +153,7 @@ bool VoiceStore::parseMsg(QString message)
         qDebug() << "Decreased nominal frequency" << "\n";
         return true;
     default:
+        qDebug() << "default" << "\n";
         return false;
     }
 }
