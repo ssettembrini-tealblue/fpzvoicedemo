@@ -13,6 +13,7 @@
 //#include <btreceiver.h>
 //#include "bluetooth_services_model.h"
 #include "../usecases/inveor_store.h"
+#include "../usecases/mock_inveor_store.h"
 #include "../usecases/voice_store.h"
 #include "../usecases/client_actions.h"
 //#include "devices_store.h"
@@ -41,7 +42,9 @@ int main(int argc, char *argv[])
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_QtQuickControls1Plugin().instance())->registerTypes("QtQuick.Controls");
 #endif
     auto clientActions = new ClientActions(&app);
-    auto inveorStore = new InveorStore(clientActions,&app);
+
+    //changed INVEOR TO MOCK INVEOR (SPS 2023)
+    auto inveorStore = new MockInveorStore(clientActions,&app);
     auto voiceStore = new VoiceStore(clientActions,&app);
     //clientActions->connectDevice();
     QQmlApplicationEngine engine;

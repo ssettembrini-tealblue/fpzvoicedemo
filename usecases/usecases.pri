@@ -27,6 +27,7 @@ HEADERS += \
     $$PWD/device_store.h \
     $$PWD/read_current_params.h \
     $$PWD/voice_store.h \
+    $$PWD/mock_inveor_store.h
 
 
 SOURCES += \
@@ -35,8 +36,15 @@ SOURCES += \
     $$PWD/device_store.cpp \
     $$PWD/read_current_params.cpp \
     $$PWD/voice_store.cpp \
+    $$PWD/mock_inveor_store.cpp
 
 }
 
 RESOURCES += \
     $$PWD/usecases.qrc
+
+SOURCES += \
+    $$PWD/mock_inveor_store.cpp
+
+HEADERS += \
+    $$PWD/mock_inveor_store.h
