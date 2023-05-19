@@ -105,23 +105,24 @@ bool VoiceStore::parseMsg(QString message)
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());//fromVariant(fullMessage);
     QJsonObject json = doc.object();
 
-    QJsonValue valuetype = json.value(QString("type"));
+    QJsonValue valuetype = json.value("type");
     QJsonValue typeobj = valuetype["type"];
-    qDebug() << typeobj.toString();
-    if(typeobj.toString()!="fpzcontrol") return false;
-    QJsonValue valuedata = json.value(QString("data"));
+    qDebug() << typeobj.toString() << "\n";
+    if(typeobj.toString()!="fpzcontrol")
+        return false;
+    QJsonValue valuedata = json.value("data");
     //qDebug().noquote() << valuedata;
 
     QJsonObject item = valuedata.toObject();
     //qDebug().noquote() << tr("value: ") << item["value"].toString();
-    qDebug() << tr("action: ") << item["action"].toString();
+    qDebug() << "action: " << item["action"].toString() << "\n";
 
 
-    qDebug() << json["type"].toString();
+    qDebug() << json["type"].toString() << "n";
 
 
     uint value=item["value"].toInt();//0;//here parse from the json the actual value;
-    qDebug() << value;
+    qDebug() << value << "\n";
 
     int translatedMsg=translateMsg(item["action"].toString());
 
