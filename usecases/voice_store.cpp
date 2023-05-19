@@ -122,7 +122,7 @@ bool VoiceStore::parseMsg(QString message)
     uint value=item["value"].toInt();//0;//here parse from the json the actual value;
     qDebug() << value;
 
-    int translatedMsg=translateMsg(json["type"].toString());
+    int translatedMsg=translateMsg(item["action"].toString());
 
     setDebug(message.toUtf8());
 
