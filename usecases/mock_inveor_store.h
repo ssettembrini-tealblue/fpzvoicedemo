@@ -22,7 +22,7 @@ class MockInveorStore : public QObject
     Q_PROPERTY(uint innerTemp READ innerTemp NOTIFY innerTempChanged)
     Q_PROPERTY(uint minFrequency READ minFrequency NOTIFY minFrequencyChanged)
     Q_PROPERTY(uint maxFrequency READ maxFrequency NOTIFY maxFrequencyChanged)
-    Q_PROPERTY(uint nomFreq WRITE setNominalFreq READ nomFreq NOTIFY nomFreqChanged)
+    Q_PROPERTY(uint nomFreq WRITE setNominalFrequency READ nomFreq NOTIFY nomFreqChanged)
 
 public:
     explicit MockInveorStore(ClientActions* clientActions,QObject *parent = nullptr);
@@ -32,7 +32,6 @@ public:
 
     void setNominalFrequency(uint nominalFrequency);
     void setMotorVoltage(uint newMotorVoltage);
-    void setNominalFreq(uint newNomFreq);
     void setMotorCurrent(uint newMotorCurrent);
 
     QString connStatus();
