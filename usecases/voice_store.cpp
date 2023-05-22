@@ -7,18 +7,15 @@ VoiceStore::VoiceStore(ClientActions* clientActions,QObject *parent)
     qDebug() << m_webSocket.state();
     m_clientActions= clientActions;
 
+    setDetectedWakeWord(false);
 
     setConnectionAddress("ws://"+connectionIp()+":" + QString::number(connectionPort()) +"/core");
     qDebug() << connectionAddress();
-
-
-
 
     connect(&m_webSocket, &QWebSocket::connected, this, &VoiceStore::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &VoiceStore::onDisconnected);
 
     connectWebsocket();
-
 
 }
 
@@ -108,8 +105,8 @@ bool VoiceStore::parseMsg(QString message)
     QJsonValue valuetype = json.value("type");
     //QJsonValue typeobj = valuetype["type"];
     qDebug() << valuetype.toString() << "\n";
-    if(valuetype.toString()!="fpzcontrol")
-        return false;
+    //    if(valuetype.toString()!="fpzcontrol")
+    //        return false;
     QJsonValue valuedata = json.value("data");
     //qDebug().noquote() << valuedata;
 
@@ -125,6 +122,7 @@ bool VoiceStore::parseMsg(QString message)
     qDebug() << value << "\n";
 
     int translatedMsg=translateMsg(item["action"].toString());
+    setDetectedWakeWord(true);
 
     setDebug(message.toUtf8());
 
@@ -188,4 +186,17 @@ void VoiceStore::setDebug(const QString &newDebug)
         return;
     m_debug = newDebug;
     emit debugChanged();
+}
+
+bool VoiceStore::detectedWakeWord() const
+{
+    return m_detectedWakeWord;
+}
+
+void VoiceStore::setDetectedWakeWord(bool newDetectedWakeWord)
+{
+    if (m_detectedWakeWord == newDetectedWakeWord)
+        return;
+    m_detectedWakeWord = newDetectedWakeWord;
+    emit detectedWakeWordChanged();
 }

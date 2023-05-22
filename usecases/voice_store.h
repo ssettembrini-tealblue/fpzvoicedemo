@@ -27,6 +27,8 @@ class VoiceStore : public QObject
     Q_PROPERTY(int connectionPort READ connectionPort WRITE setConnectionPort NOTIFY connectionPortChanged)
     Q_PROPERTY(QString connectionAddress READ connectionAddress WRITE setConnectionAddress NOTIFY connectionAddressChanged)
     Q_PROPERTY(QString debug READ debug WRITE setDebug NOTIFY debugChanged)
+    Q_PROPERTY(bool detectedWakeWord READ detectedWakeWord WRITE setDetectedWakeWord NOTIFY detectedWakeWordChanged)
+
 
 public:
     explicit VoiceStore(ClientActions* clientActions,QObject *parent = nullptr);
@@ -43,6 +45,9 @@ public:
     QString debug() const;
     void setDebug(const QString &newDebug);
 
+    bool detectedWakeWord() const;
+    void setDetectedWakeWord(bool newDetectedWakeWord);
+
 signals:
     void connectionAddressChanged();
     void connectionPortChanged();
@@ -50,6 +55,8 @@ signals:
     void connectionIpChanged();
 
     void debugChanged();
+
+    void detectedWakeWordChanged();
 
 private:
     void connectWebsocket();
@@ -69,6 +76,7 @@ private:
 
     ClientActions* m_clientActions;
     QString m_debug;
+    bool m_detectedWakeWord;
 };
 
 #endif // VOICE_STORE_H

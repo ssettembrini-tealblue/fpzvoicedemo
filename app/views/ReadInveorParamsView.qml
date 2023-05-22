@@ -5,20 +5,28 @@ import FPZBlowerMonitorConf 1.0
 import "../FPZBlowerMonitorConfUI"
 
 ReadCurrentInverterParamsTpl {
-
-    Text{
-        id: txtDebug
+    Row{
+        spacing: 6
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 60
-        text: voiceStore.debug
+        Text{
+            id: txtWakeWord
+            text: voiceStore.detectedWakeWord ? "DETECTED" : "NOT DETECTED"
+        }
+        Text{
+            text: "-"
+        }
+        Text{
+            id: txtDebug
+            text: voiceStore.debug
+        }
     }
-
     id: readCurrentParamsView
     width: Constants.width
     height: Constants.height
     property bool sensorDataIsComing: false
-    property string testDeviceName  
+    property string testDeviceName
     anchors.fill: parent
     statusBar.connectedDeviceName.text: inveorStore.deviceId
     state: "init"
