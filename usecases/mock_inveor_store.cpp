@@ -35,7 +35,8 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::writeNominalFrequency,this,[this](uint value){
 
-        qDebug() << "MOCK INVEOR REACHED" << "\n";
+        qDebug() << "MOCK INVEOR REACHED";
+        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
         setNominalFrequency(value);
         setMotorVoltage(77);
         setMotorCurrent(77);
@@ -43,8 +44,8 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::stopBlower,this,[this](){
-        qDebug() << "MOCK INVEOR REACHED" << "\n";
-
+        qDebug() << "MOCK INVEOR REACHED";
+        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
         setNominalFrequency(0);
         setMotorVoltage(77);
         setMotorCurrent(77);
@@ -53,18 +54,23 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::startBlower,this,[this](){
         //if(actualFrequency()==0){//if(nomFrequency()==0){
-        qDebug() << "MOCK INVEOR REACHED" << "\n";
+        qDebug() << "MOCK INVEOR REACHED";
+        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
 
         setNominalFrequency(77);//minFrequency());
         setMotorVoltage(77);
         setMotorCurrent(77);
+
+
+        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
+
         //m_inveor_inverter.writeNominalFrequency(minFrequency());
         emit commStatusChanged();
         //}
     });
     connect(m_clientActions, &ClientActions::increaseNominalFrequency,this,[this](uint step){
-        qDebug() << "MOCK INVEOR REACHED" << "\n";
-
+        qDebug() << "MOCK INVEOR REACHED";
+        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
         setNominalFrequency(nomFreq() + step);
         setMotorVoltage(77);
         setMotorCurrent(77);
@@ -72,8 +78,8 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::decreaseNominalFrequency,this,[this](uint step){
-        qDebug() << "MOCK INVEOR REACHED" << "\n";
-
+        qDebug() << "MOCK INVEOR REACHED";
+        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
         setNominalFrequency(nomFreq() - step);
         setMotorVoltage(77);
         setMotorCurrent(77);
