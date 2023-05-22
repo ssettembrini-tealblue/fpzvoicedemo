@@ -168,7 +168,7 @@ int VoiceStore::translateMsg(QString message)
     else if(message=="increase")
         return int(TypeMsg::Increase);
     else if(message=="decrease")
-        return int(TypeMsg::Increase);
+        return int(TypeMsg::Decrease);
     else
         return int(TypeMsg::Unknown);
 

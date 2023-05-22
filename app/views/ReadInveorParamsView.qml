@@ -10,15 +10,26 @@ ReadCurrentInverterParamsTpl {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 80
+        Rectangle{
+            height: 10
+            width: 10
+            radius: height/2
+            color:voiceStore.detectedWakeWord ? "green" : "red"
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
         Text{
             id: txtWakeWord
             text: voiceStore.detectedWakeWord ? "DETECTED" : "NOT DETECTED"
+            color: voiceStore.detectedWakeWord ? "green" : "red"
         }
         Text{
             text: "-"
+            visible: txtDebug.visible
         }
         Text{
             id: txtDebug
+            visible: false
             text: voiceStore.debug
             color: voiceStore.detectedWakeWord ? "green" : "red"
         }

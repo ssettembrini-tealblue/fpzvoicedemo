@@ -86,8 +86,8 @@ private:
     ClientActions* m_clientActions;
     InveorInverter m_inveor_inverter;
     QString m_msgStatus;
-    uint m_minFrequency {10};
-    uint m_maxFrequency {0};
+    uint m_minFrequency {0};
+    uint m_maxFrequency {50};
     uint m_operatingMode {0};
     uint m_settingSetpoint {0};
     uint m_approvalSetpoint {0};
