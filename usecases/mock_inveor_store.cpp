@@ -8,6 +8,9 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
 {
     m_timer= new QTimer(this);
     m_clientActions= clientActions;
+    setMotorVoltage(500);
+    setMotorCurrent(30);
+    setNominalFrequency(20);
     //     //m_inveor_inverter.setupConnection(120,"/dev/ttyAMA3",
     //                                      BaudRate::Baud38400,
     //                                      Parity::NoParity,
@@ -35,34 +38,25 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::writeNominalFrequency,this,[this](uint value){
 
-        qDebug() << "MOCK INVEOR REACHED";
-        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
+        //        qDebug() << "MOCK INVEOR REACHED";
+        //        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
         setNominalFrequency(value);
-        setMotorVoltage(77);
-        setMotorCurrent(77);
         //m_inveor_inverter.writeNominalFrequency(value);
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::stopBlower,this,[this](){
-        qDebug() << "MOCK INVEOR REACHED";
-        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
+        //        qDebug() << "MOCK INVEOR REACHED";
+        //        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
         setNominalFrequency(0);
-        setMotorVoltage(77);
-        setMotorCurrent(77);
         //m_inveor_inverter.writeNominalFrequency(0);
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::startBlower,this,[this](){
         //if(actualFrequency()==0){//if(nomFrequency()==0){
-        qDebug() << "MOCK INVEOR REACHED";
-        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
-
-        setNominalFrequency(77);//minFrequency());
-        setMotorVoltage(77);
-        setMotorCurrent(77);
-
-
-        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
+        //        qDebug() << "MOCK INVEOR REACHED";
+        //        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
+        setNominalFrequency(m_minFrequency);//minFrequency());
+        //        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
 
         //m_inveor_inverter.writeNominalFrequency(minFrequency());
         emit commStatusChanged();
@@ -72,18 +66,19 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
         qDebug() << "MOCK INVEOR REACHED";
         qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
         setNominalFrequency(nomFreq() + step);
-        setMotorVoltage(77);
-        setMotorCurrent(77);
+
         //m_inveor_inverter.writeNominalFrequency(nomFreq());
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::decreaseNominalFrequency,this,[this](uint step){
-        qDebug() << "MOCK INVEOR REACHED";
-        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
+//        qDebug() << "MOCK INVEOR REACHED";
+//        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
+        if(nomFreq()>step){
         setNominalFrequency(nomFreq() - step);
-        setMotorVoltage(77);
-        setMotorCurrent(77);
-        //m_inveor_inverter.writeNominalFrequency(nomFreq());
+        }
+        else{
+            setNominalFrequency(0);
+        }
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::writeMaxFrequency,this,[this](uint value){
@@ -180,12 +175,12 @@ uint MockInveorStore::actualFrequency()
 
 uint MockInveorStore::motorVoltage()
 {
-    return    m_inveor_inverter.motorVoltage();
+    return    m_motorVoltage;
 }
 
 uint MockInveorStore::motorCurrent()
 {
-    return    m_inveor_inverter.motorCurrent();
+    return    m_motorCurrent;
 }
 
 uint MockInveorStore::gridVoltage()
@@ -223,29 +218,22 @@ uint MockInveorStore::nomFreq() //const
     return m_nomFreq;
 }
 
-void MockInveorStore::setNominalFrequency(uint nominalFrequency)
-{
-    if (m_nomFreq == nominalFrequency)
-        return;
 
-    m_nomFreq = nominalFrequency;
-    emit nominalFrequencyChanged(m_nomFreq);
-}
 
 void MockInveorStore::readValues(){
     QTimer::singleShot(1, this, [this](){
         if(m_inveor_inverter.readActualFrequency()){
-            emit actualFrequencyChanged();
+            //emit actualFrequencyChanged();
         }
     });
     QTimer::singleShot(2, this, [this](){
         if(m_inveor_inverter.readMotorVoltage()){
-            emit motorVoltageChanged();
+            //emit motorVoltageChanged();
         }
     });
     QTimer::singleShot(3, this, [this](){
         if(m_inveor_inverter.readMotorCurrent()){
-            emit motorCurrentChanged();
+            //emit motorCurrentChanged();
         }
     });
     if(m_inveor_inverter.readMinFrequency()){
@@ -296,21 +284,23 @@ void MockInveorStore::setMotorVoltage(uint newMotorVoltage)
     if (m_motorVoltage == newMotorVoltage)
         return;
     m_motorVoltage = newMotorVoltage;
-    emit motorVoltageChanged();
+    emit motorVoltageChanged(newMotorVoltage);
 }
 
-void MockInveorStore::setNominalFreq(uint newNomFreq)
-{
-    if (m_nomFreq == newNomFreq)
-        return;
-    m_nomFreq = newNomFreq;
-    emit nomFreqChanged();
-}
 
 void MockInveorStore::setMotorCurrent(uint newMotorCurrent)
 {
     if (m_motorCurrent == newMotorCurrent)
         return;
     m_motorCurrent = newMotorCurrent;
-    emit motorCurrentChanged();
+    emit motorCurrentChanged(newMotorCurrent);
+}
+
+void MockInveorStore::setNominalFrequency(uint nominalFrequency)
+{
+    if (m_nomFreq == nominalFrequency)
+        return;
+
+    m_nomFreq = nominalFrequency;
+    emit nominalFrequencyChanged(m_nomFreq);
 }

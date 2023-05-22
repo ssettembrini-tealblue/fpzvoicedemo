@@ -33,6 +33,7 @@ public:
     void setNominalFrequency(uint nominalFrequency);
     void setMotorVoltage(uint newMotorVoltage);
     void setNominalFreq(uint newNomFreq);
+    void setMotorCurrent(uint newMotorCurrent);
 
     QString connStatus();
     QString msgStatus();
@@ -51,12 +52,12 @@ public:
     uint pidNominalValue();
     uint analogicInput1Type();
     uint analogicInput1Min();
-    uint analogicInput1Max();    
+    uint analogicInput1Max();
     uint nomFreq();// const;
 
 
 
-    void setMotorCurrent(uint newMotorCurrent);
+
 
 signals:
     void connStatusChanged();
@@ -70,15 +71,17 @@ signals:
     void pidActualValueChanged(uint newPIDActualValue);
     void statusWordChanged();
     void actualFrequencyChanged();
-    void motorVoltageChanged();
-    void motorCurrentChanged();
+
     void gridVoltageChanged();
     void innerTempChanged();
     void pidNominalValueChanged(uint newPIDNominalValue);
     void analogicInput1TypeChanged(uint newAnalogicInput1Type);
     void analogicInput1MinChanged(uint newAnalogicInput1Min);
     void analogicInput1MaxChanged(uint newAnalogicInput1Max);
-    void nomFreqChanged();
+
+    void nomFreqChanged(uint nominalFrequency);
+    void motorVoltageChanged(uint motVol);
+    void motorCurrentChanged(uint motCur);
 
 private:
     ClientActions* m_clientActions;
