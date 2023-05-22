@@ -20,6 +20,7 @@ ReadCurrentInverterParamsTpl {
         Text{
             id: txtDebug
             text: voiceStore.debug
+            color: voiceStore.detectedWakeWord ? "green" : "red"
         }
     }
     id: readCurrentParamsView

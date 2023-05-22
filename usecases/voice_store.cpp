@@ -121,7 +121,7 @@ bool VoiceStore::parseMsg(QString message)
     if(valuetype.toString()=="recognizer_loop:wakeword"){
         setDetectedWakeWord(true);
     }
-    else{
+    if(valuetype.toString()=="recognizer_loop:record_end"){
         setDetectedWakeWord(false);
     }
     setDebug(message.toUtf8());
