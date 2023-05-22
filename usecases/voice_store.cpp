@@ -104,7 +104,7 @@ bool VoiceStore::parseMsg(QString message)
 
     QJsonValue valuetype = json.value("type");
     //QJsonValue typeobj = valuetype["type"];
-    qDebug() << valuetype.toString() << "\n";
+    qDebug() << "type: "<< valuetype.toString() << "\n";
     //    if(valuetype.toString()!="fpzcontrol")
     //        return false;
     QJsonValue valuedata = json.value("data");
@@ -114,12 +114,8 @@ bool VoiceStore::parseMsg(QString message)
     //qDebug().noquote() << tr("value: ") << item["value"].toString();
     qDebug() << "action: " << item["action"].toString() << "\n";
 
-
-    qDebug() << json["type"].toString() << "n";
-
-
     uint value=item["value"].toInt();//0;//here parse from the json the actual value;
-    qDebug() << value << "\n";
+    qDebug() <<"value: " << value << "\n";
 
     int translatedMsg=translateMsg(item["action"].toString());
     setDetectedWakeWord(true);

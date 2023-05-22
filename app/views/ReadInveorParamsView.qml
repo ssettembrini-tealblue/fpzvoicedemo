@@ -9,7 +9,7 @@ ReadCurrentInverterParamsTpl {
         spacing: 6
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 60
+        anchors.topMargin: 80
         Text{
             id: txtWakeWord
             text: voiceStore.detectedWakeWord ? "DETECTED" : "NOT DETECTED"

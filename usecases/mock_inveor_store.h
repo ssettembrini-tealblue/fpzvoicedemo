@@ -16,13 +16,13 @@ class MockInveorStore : public QObject
     Q_PROPERTY(QString msgStatus READ msgStatus NOTIFY commStatusChanged)
     Q_PROPERTY(uint statusWord READ statusWord NOTIFY statusWordChanged)
     Q_PROPERTY(uint actualFrequency READ actualFrequency NOTIFY actualFrequencyChanged)
-    Q_PROPERTY(uint motorVoltage READ motorVoltage NOTIFY motorVoltageChanged)
-    Q_PROPERTY(uint motorCurrent READ motorCurrent NOTIFY motorCurrentChanged)
+    Q_PROPERTY(uint motorVoltage WRITE setMotorVoltage READ motorVoltage NOTIFY motorVoltageChanged)
+    Q_PROPERTY(uint motorCurrent WRITE setMotorCurrent READ motorCurrent NOTIFY motorCurrentChanged)
     Q_PROPERTY(uint gridVoltage READ gridVoltage NOTIFY gridVoltageChanged)
     Q_PROPERTY(uint innerTemp READ innerTemp NOTIFY innerTempChanged)
     Q_PROPERTY(uint minFrequency READ minFrequency NOTIFY minFrequencyChanged)
     Q_PROPERTY(uint maxFrequency READ maxFrequency NOTIFY maxFrequencyChanged)
-    Q_PROPERTY(uint nomFreq READ nomFreq NOTIFY nomFreqChanged)
+    Q_PROPERTY(uint nomFreq WRITE setNominalFreq READ nomFreq NOTIFY nomFreqChanged)
 
 public:
     explicit MockInveorStore(ClientActions* clientActions,QObject *parent = nullptr);
@@ -31,8 +31,8 @@ public:
     void readValues();
 
     void setNominalFrequency(uint nominalFrequency);
-    void setMotorCurrent(uint motCur);
-    void setMotorPower(uint motPow);
+    void setMotorVoltage(uint newMotorVoltage);
+    void setNominalFreq(uint newNomFreq);
 
     QString connStatus();
     QString msgStatus();
@@ -52,7 +52,11 @@ public:
     uint analogicInput1Type();
     uint analogicInput1Min();
     uint analogicInput1Max();    
-    uint nomFreq() const;
+    uint nomFreq();// const;
+
+
+
+    void setMotorCurrent(uint newMotorCurrent);
 
 signals:
     void connStatusChanged();
@@ -74,7 +78,7 @@ signals:
     void analogicInput1TypeChanged(uint newAnalogicInput1Type);
     void analogicInput1MinChanged(uint newAnalogicInput1Min);
     void analogicInput1MaxChanged(uint newAnalogicInput1Max);
-    void nomFreqChanged(uint nomFreq);
+    void nomFreqChanged();
 
 private:
     ClientActions* m_clientActions;
