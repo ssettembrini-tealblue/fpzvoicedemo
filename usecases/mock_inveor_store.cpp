@@ -55,7 +55,9 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
         //if(actualFrequency()==0){//if(nomFrequency()==0){
         //        qDebug() << "MOCK INVEOR REACHED";
         //        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
+        if(nomFreq()==0){
         setNominalFrequency(m_minFrequency);//minFrequency());
+        }
         //        qDebug() << "VOLTAGE" << motorVoltage() <<" - CURRENT "<< motorCurrent();
 
         //m_inveor_inverter.writeNominalFrequency(minFrequency());
