@@ -118,8 +118,12 @@ bool VoiceStore::parseMsg(QString message)
     qDebug() <<"value: " << value << "\n";
 
     int translatedMsg=translateMsg(item["action"].toString());
-    setDetectedWakeWord(true);
-
+    if(valuetype.toString()=="recognizer_loop:wakeword"){
+        setDetectedWakeWord(true);
+    }
+    else{
+        setDetectedWakeWord(false);
+    }
     setDebug(message.toUtf8());
 
     switch(translatedMsg){
