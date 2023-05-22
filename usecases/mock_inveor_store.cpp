@@ -34,6 +34,8 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
         QCoreApplication::quit();
     });
     connect(m_clientActions, &ClientActions::writeNominalFrequency,this,[this](uint value){
+
+        qDebug() << "MOCK INVEOR REACHED" << "\n";
         setNominalFrequency(value);
         setMotorPower(77);
         setMotorCurrent(77);
@@ -41,6 +43,8 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::stopBlower,this,[this](){
+        qDebug() << "MOCK INVEOR REACHED" << "\n";
+
         setNominalFrequency(0);
         setMotorPower(77);
         setMotorCurrent(77);
@@ -49,14 +53,18 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::startBlower,this,[this](){
         //if(actualFrequency()==0){//if(nomFrequency()==0){
-            setNominalFrequency(minFrequency());
-            setMotorPower(77);
-            setMotorCurrent(77);
-            //m_inveor_inverter.writeNominalFrequency(minFrequency());
-            emit commStatusChanged();
+        qDebug() << "MOCK INVEOR REACHED" << "\n";
+
+        setNominalFrequency(77);//minFrequency());
+        setMotorPower(77);
+        setMotorCurrent(77);
+        //m_inveor_inverter.writeNominalFrequency(minFrequency());
+        emit commStatusChanged();
         //}
     });
     connect(m_clientActions, &ClientActions::increaseNominalFrequency,this,[this](uint step){
+        qDebug() << "MOCK INVEOR REACHED" << "\n";
+
         setNominalFrequency(nomFreq() + step);
         setMotorPower(77);
         setMotorCurrent(77);
@@ -64,6 +72,8 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::decreaseNominalFrequency,this,[this](uint step){
+        qDebug() << "MOCK INVEOR REACHED" << "\n";
+
         setNominalFrequency(nomFreq() - step);
         setMotorPower(77);
         setMotorCurrent(77);
