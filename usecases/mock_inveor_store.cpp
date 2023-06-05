@@ -77,6 +77,26 @@ uint MockInveorStore::nomFreq() //const
     return m_nomFreq;
 }
 
+QString MockInveorStore::connStatus() //const
+{
+    return m_connStatus;
+}
+QString MockInveorStore::msgStatus() //const
+{
+    return m_msgStatus;
+}
+uint MockInveorStore::actualFrequency() //const
+{
+    return m_actualFrequency;
+}
+uint MockInveorStore::minFrequency() //const
+{
+    return m_minFrequency;
+}
+uint MockInveorStore::maxFrequency() //const
+{
+    return m_maxFrequency;
+}
 void MockInveorStore::setMotorVoltage(uint newMotorVoltage)
 {
     if (m_motorVoltage == newMotorVoltage)

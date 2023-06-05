@@ -62,7 +62,7 @@ void VoiceStore::disconnectWebsocket()
 void VoiceStore::onTriggeredWakeWord()
 {
     QJsonObject jsonObj;
-    jsonObj.insert("type","recognizer_loop:wakeword");
+    jsonObj.insert("type","mycroft.mic.listen");
     jsonObj.insert("data","true");
 
     //    QJsonObject dataObject;

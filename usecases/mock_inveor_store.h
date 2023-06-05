@@ -56,6 +56,7 @@ private:
     uint m_motorVoltage {0};
     uint m_motorCurrent {0};
     uint m_nomFreq {0};
+    QString m_connStatus;
 };
 
 #endif // MOCK_INVEOR_STORE_H

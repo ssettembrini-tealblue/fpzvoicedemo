@@ -37,9 +37,12 @@ ReadCurrentInverterParamsTpl {
             color: voiceStore.detectedWakeWord ? "green" : "red"
             anchors.verticalCenter: parent.verticalCenter
         }
-
+Item{
+ width:30
+ height:1
+}
         Button{
-            text: "Trigger wake word"
+            text: "Manual Listen"
             anchors.verticalCenter: parent.verticalCenter
             onClicked: clientActions.triggerWakeWord()
         }
