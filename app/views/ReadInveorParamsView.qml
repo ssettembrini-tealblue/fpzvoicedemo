@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
 import QtQuick.Layouts 1.15
 import FPZBlowerMonitorConf 1.0
@@ -22,16 +23,25 @@ ReadCurrentInverterParamsTpl {
             id: txtWakeWord
             text: voiceStore.detectedWakeWord ? "DETECTED" : "NOT DETECTED"
             color: voiceStore.detectedWakeWord ? "green" : "red"
+            anchors.verticalCenter: parent.verticalCenter
         }
         Text{
             text: "-"
             visible: txtDebug.visible
+            anchors.verticalCenter: parent.verticalCenter
         }
         Text{
             id: txtDebug
             visible: false
             text: voiceStore.debug
             color: voiceStore.detectedWakeWord ? "green" : "red"
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Button{
+            text: "Trigger wake word"
+            anchors.verticalCenter: parent.verticalCenter
+            onClicked: clientActions.triggerWakeWord()
         }
     }
     id: readCurrentParamsView

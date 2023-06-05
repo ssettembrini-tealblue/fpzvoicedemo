@@ -62,6 +62,7 @@ private:
     void connectWebsocket();
     void disconnectWebsocket();
 
+    void onTriggeredWakeWord();
     void onConnected();
     void onDisconnected();
     void onMsgListened(QString message);

@@ -15,6 +15,8 @@ VoiceStore::VoiceStore(ClientActions* clientActions,QObject *parent)
     connect(&m_webSocket, &QWebSocket::connected, this, &VoiceStore::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &VoiceStore::onDisconnected);
 
+    connect(m_clientActions,&ClientActions::triggerWakeWord,this,&VoiceStore::onTriggeredWakeWord);
+
     connectWebsocket();
 
 }
@@ -55,6 +57,24 @@ void VoiceStore::connectWebsocket()
 void VoiceStore::disconnectWebsocket()
 {
     m_webSocket.close();
+}
+
+void VoiceStore::onTriggeredWakeWord()
+{
+    QJsonObject jsonObj;
+    jsonObj.insert("type","recognizer_loop:wakeword");
+    jsonObj.insert("data","true");
+
+    //    QJsonObject dataObject;
+    //        dataObject.insert("Street", "Downing Street 10");
+    //        dataObject.insert("City", "London");
+    //        jsonObj.insert("data", dataObject);
+
+    QJsonDocument doc(jsonObj);
+
+    QByteArray jsonMessage(doc.toJson(QJsonDocument::Compact));
+    QString stringMessage = QString::fromUtf8(jsonMessage);
+    m_webSocket.sendTextMessage(stringMessage);
 }
 
 QString VoiceStore::connectionIp() const

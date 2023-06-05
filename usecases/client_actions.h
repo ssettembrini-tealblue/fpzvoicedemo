@@ -13,6 +13,8 @@ signals:
     //void sendFrequency(int value);
     void stopBtDeviceDiscovery();
 
+    void triggerWakeWord();
+
     void connectDevice();
     //void writeParameters(int value);
     //void readParameters();
