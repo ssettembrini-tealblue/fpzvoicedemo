@@ -34,11 +34,11 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
         QCoreApplication::quit();
     });
     connect(m_clientActions, &ClientActions::writeNominalFrequency,this,[this](uint value){
-        if(value<40){
+        //if(value<40){
 
             setNominalFrequency(value);
             m_inveor_inverter.writeNominalFrequency(value);
-        }
+        //}
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::stopBlower,this,[this](){
@@ -55,10 +55,10 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::increaseNominalFrequency,this,[this](uint step){
         uint increasedvalue= nomFreq() + step;
-        if(increasedvalue<40){
+        //if(increasedvalue<40){
             setNominalFrequency(increasedvalue);
             m_inveor_inverter.writeNominalFrequency(increasedvalue);
-        }
+        //}
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::decreaseNominalFrequency,this,[this](uint step){
@@ -68,6 +68,11 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
             uint decreasedvalue = nomFreq() - step;
             setNominalFrequency(decreasedvalue);
             m_inveor_inverter.writeNominalFrequency(decreasedvalue);
+            emit commStatusChanged();
+        }
+        else{
+            setNominalFrequency(0);
+            m_inveor_inverter.writeNominalFrequency(0);
             emit commStatusChanged();
         }
     });
