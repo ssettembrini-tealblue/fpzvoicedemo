@@ -160,8 +160,10 @@ bool VoiceStore::parseMsg(QString message)
         qDebug() << "Stopped blower" << "\n";
         return true;
     case 3:
+        //if(value<40){
         emit m_clientActions->writeNominalFrequency(value);
         qDebug() << "Written nominal frequency" << "\n";
+        //}
         return true;
     case 4:
         emit m_clientActions->increaseNominalFrequency(value);

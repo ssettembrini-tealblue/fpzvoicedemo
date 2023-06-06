@@ -34,8 +34,11 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
         QCoreApplication::quit();
     });
     connect(m_clientActions, &ClientActions::writeNominalFrequency,this,[this](uint value){
-        setNominalFrequency(value);
-        m_inveor_inverter.writeNominalFrequency(value);
+        if(value<40){
+
+            setNominalFrequency(value);
+            m_inveor_inverter.writeNominalFrequency(value);
+        }
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::stopBlower,this,[this](){
@@ -45,20 +48,28 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::startBlower,this,[this](){
         if(actualFrequency()==0){//if(nomFrequency()==0){
-            setNominalFrequency(minFrequency());
-            m_inveor_inverter.writeNominalFrequency(minFrequency());
+            setNominalFrequency(10);//minFrequency());
+            m_inveor_inverter.writeNominalFrequency(10);//minFrequency());
             emit commStatusChanged();
         }
     });
     connect(m_clientActions, &ClientActions::increaseNominalFrequency,this,[this](uint step){
-        setNominalFrequency(nomFreq() + step);
-        m_inveor_inverter.writeNominalFrequency(nomFreq());
+        uint increasedvalue= nomFreq() + step;
+        if(increasedvalue<40){
+            setNominalFrequency(increasedvalue);
+            m_inveor_inverter.writeNominalFrequency(increasedvalue);
+        }
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::decreaseNominalFrequency,this,[this](uint step){
-        setNominalFrequency(nomFreq() - step);
-        m_inveor_inverter.writeNominalFrequency(nomFreq());
-        emit commStatusChanged();
+
+        if(nomFreq()>step){
+
+            uint decreasedvalue = nomFreq() - step;
+            setNominalFrequency(decreasedvalue);
+            m_inveor_inverter.writeNominalFrequency(decreasedvalue);
+            emit commStatusChanged();
+        }
     });
     connect(m_clientActions, &ClientActions::writeMaxFrequency,this,[this](uint value){
         m_inveor_inverter.writeMaxFrequency(value);
