@@ -11,6 +11,8 @@ MockInveorStore::MockInveorStore(ClientActions* clientActions,QObject *parent)
     setMotorVoltage(500);
     setMotorCurrent(30);
     setNominalFrequency(20);
+//    emit connStatusChanged();
+//    emit commStatusChanged();
 
     connect(m_clientActions, &ClientActions::connectDevice,this,[this](){
         emit connStatusChanged();

@@ -70,11 +70,7 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
             m_inveor_inverter.writeNominalFrequency(decreasedvalue);
             emit commStatusChanged();
         }
-        else{
-            setNominalFrequency(0);
-            m_inveor_inverter.writeNominalFrequency(0);
-            emit commStatusChanged();
-        }
+
     });
     connect(m_clientActions, &ClientActions::writeMaxFrequency,this,[this](uint value){
         m_inveor_inverter.writeMaxFrequency(value);

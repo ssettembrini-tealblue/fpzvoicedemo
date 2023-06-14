@@ -6,7 +6,7 @@ VoiceStore::VoiceStore(ClientActions* clientActions,QObject *parent)
 {
     qDebug() << m_webSocket.state();
     m_clientActions= clientActions;
-
+    emit m_clientActions->connectDevice();
     setDetectedWakeWord(false);
 
     setConnectionAddress("ws://"+connectionIp()+":" + QString::number(connectionPort()) +"/core");
@@ -116,7 +116,7 @@ void VoiceStore::onMsgListened(QString message)
 
 bool VoiceStore::parseMsg(QString message)
 {
-    qDebug () << Q_FUNC_INFO << "\n";
+    //qDebug () << Q_FUNC_INFO << "\n";
     //HERE PARSE MSG FROM WEBSOCKET
     //QVariant fullMessage = QVariant(message);
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());//fromVariant(fullMessage);
@@ -124,7 +124,7 @@ bool VoiceStore::parseMsg(QString message)
 
     QJsonValue valuetype = json.value("type");
     //QJsonValue typeobj = valuetype["type"];
-    qDebug() << "type: "<< valuetype.toString() << "\n";
+    //qDebug() << "type: "<< valuetype.toString() << "\n";
     //    if(valuetype.toString()!="fpzcontrol")
     //        return false;
     QJsonValue valuedata = json.value("data");
@@ -132,10 +132,11 @@ bool VoiceStore::parseMsg(QString message)
 
     QJsonObject item = valuedata.toObject();
     //qDebug().noquote() << tr("value: ") << item["value"].toString();
-    qDebug() << "action: " << item["action"].toString() << "\n";
+
+    //qDebug() << "action: " << item["action"].toString() << "\n";
 
     uint value=item["value"].toInt();//0;//here parse from the json the actual value;
-    qDebug() <<"value: " << value << "\n";
+    //qDebug() <<"value: " << value << "\n";
 
     int translatedMsg=translateMsg(item["action"].toString());
     if(valuetype.toString()=="recognizer_loop:wakeword"){
@@ -178,6 +179,10 @@ bool VoiceStore::parseMsg(QString message)
         return false;
     }
 }
+
+
+
+
 
 int VoiceStore::translateMsg(QString message)
 {
