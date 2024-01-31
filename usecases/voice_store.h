@@ -16,6 +16,7 @@ enum class TypeMsg
     Set = 3,
     Increase = 4,
     Decrease = 5,
+    Switch = 6,
     Unknown = 0
 };
 
@@ -28,7 +29,9 @@ class VoiceStore : public QObject
     Q_PROPERTY(QString connectionAddress READ connectionAddress WRITE setConnectionAddress NOTIFY connectionAddressChanged)
     Q_PROPERTY(QString debug READ debug WRITE setDebug NOTIFY debugChanged)
     Q_PROPERTY(bool detectedWakeWord READ detectedWakeWord WRITE setDetectedWakeWord NOTIFY detectedWakeWordChanged)
-
+    Q_PROPERTY(QString listenedCommand READ listenedCommand WRITE setListenedCommand NOTIFY listenedCommandChanged)
+    Q_PROPERTY(bool activeCommand READ activeCommand WRITE setActiveCommand NOTIFY activeCommandChanged)
+    Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
 
 public:
     explicit VoiceStore(ClientActions* clientActions,QObject *parent = nullptr);
@@ -48,6 +51,15 @@ public:
     bool detectedWakeWord() const;
     void setDetectedWakeWord(bool newDetectedWakeWord);
 
+    QString listenedCommand() const;
+    void setListenedCommand(const QString &newListenedCommand);
+
+    bool activeCommand() const;
+    void setActiveCommand(const bool &newActiveCommand);
+
+    QString language() const;
+    void setLanguage(const QString &newLanguage);
+
 signals:
     void connectionAddressChanged();
     void connectionPortChanged();
@@ -57,6 +69,12 @@ signals:
     void debugChanged();
 
     void detectedWakeWordChanged();
+
+    void listenedCommandChanged();
+
+    void activeCommandChanged();
+
+    void languageChanged();
 
 private:
     void connectWebsocket();
@@ -77,7 +95,10 @@ private:
 
     ClientActions* m_clientActions;
     QString m_debug;
-    bool m_detectedWakeWord;
+    bool m_detectedWakeWord {false};
+    QString m_listenedCommand {"---"};
+    bool m_activeCommand{false};
+    QString m_language{"IT"};
 };
 
 #endif // VOICE_STORE_H

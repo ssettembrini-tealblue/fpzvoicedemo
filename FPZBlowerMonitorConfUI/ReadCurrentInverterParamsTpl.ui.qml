@@ -1,9 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Controls.Styles 1.4
 import FPZBlowerMonitorConf 1.0
-import "businesscontrols"
-import "businesscontrols/themes"
+import "./businesscontrols"
+import "./businesscontrols/themes"
+
+//import QtGraphicalEffects 1.12
 
 Item {
     id: root
@@ -20,11 +23,21 @@ Item {
     property alias decreaseNominalFreqBtn: decreaseNominalFreqBtn
     property alias increaseNominalFreqBtn: increaseNominalFreqBtn
     property alias actionRow: actionRow
+    property alias manualListenBtn: manualListenBtn
+    property alias languageIndicator: statusBar.languageIndicator
+    property bool activeCommand
+    property string listenedCommand
 
     TemplateBg {
         id: templateBg
         anchors.fill: parent
     }
+    //     Rectangle{
+
+    //         color:"red"
+    //         anchors.fill: parent
+    //         opacity:0.5
+    // }
 
     ColumnLayout {
         id: columnLayout
@@ -37,56 +50,204 @@ Item {
             btConnectionIndicator.visible: false
             modbusConnectionIndicator.visible: true
             sensorDataUpdateStatus.visible: true
+
         }
 
-        Item {
-            id: msgArea
-            Layout.preferredHeight: 96
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            AlertMsg {
-                id: alertMsg
-                y: 56
-                width: 572
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-            }
+        // Item {
 
-            Row {
-                id: progressMsgArea
-                width: 240
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 32
-                anchors.horizontalCenter: parent.horizontalCenter
-                Text {
-                    id: progressMsg
-                    color: ThemeConstants.colorMsgFg
-                    text: qsTr("")
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
-                    font: Constants.fontMain
-                    anchors.topMargin: 0
-                    anchors.bottomMargin: 0
-                }
-            }
-        }
-
-        StackLayout {
-            id: contentArea
-            width: 100
-            height: 80
-            currentIndex: 0 //navLayout.currentIndex
-            //currentIndex: 1
+        //     Layout.preferredHeight: 96
+        //     Layout.fillWidth: true
+        //     Layout.alignment: Qt.AlignHCenter //| Qt.AlignVCenter
+        Rectangle{
+            id: bgEffect
+            color:"transparent"
             Layout.fillHeight: true
             Layout.fillWidth: true
+            ColumnLayout {
+                id: columnLayoutContent
+                anchors.fill: parent
 
-            Item {
+                Item{
+                    Layout.fillHeight: true
+                    width:1
+                }
+                Row{
+
+                    spacing: 10
+                    //anchors.horizontalCenter: parent.horizontalCenter
+                    //anchors.top: parent.top
+                    //anchors.topMargin: 80
+                    Layout.alignment: Qt.AlignHCenter
+                    Rectangle{
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 180
+                        height: 32
+                        radius: 12
+                        color: voiceStore.detectedWakeWord ? "#a0db8e" : "#ff6f69"
+
+                        Row{
+                            anchors.centerIn: parent
+                            // Rectangle{
+                            //     height: 10
+                            //     width: 10
+                            //     radius: height/2
+                            //     color:voiceStore.detectedWakeWord ? "green" : "red"
+                            //     anchors.verticalCenter: parent.verticalCenter
+                            // }
+
+                            Text{
+                                id: txtWakeWord
+                                text: voiceStore.detectedWakeWord ? "DETECTED" : "NOT DETECTED"
+                                color: "black"//voiceStore.detectedWakeWord ? "green" : "red"
+                                anchors.verticalCenter: parent.verticalCenter
+                                //font.pixelSize: 24
+                                //lineHeight: 1.2
+                                opacity: 0.5
+                                font: Constants.fontMainS
+                            }
+                            Text{
+                                text: "-"
+                                visible: txtDebug.visible
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Text{
+                                id: txtDebug
+                                visible: false
+                                text: voiceStore.debug
+                                color: voiceStore.detectedWakeWord ? "green" : "red"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                    }
+                    // Item{
+                    //  width:30
+                    //  height:1
+                    // }
+                    Button{
+                        id: manualListenBtn
+
+                        height: 32
+                        anchors.verticalCenter: parent.verticalCenter
+                        //onClicked: clientActions.triggerWakeWord()
+
+                            background: Rectangle {
+                                height: 32
+                                radius: 4
+                                color: manualListenBtn.pressed ? "#cccccc" : "white"
+                                border.color: "grey"
+                                border.width: 1
+
+                        }
+                            contentItem: Row{
+                                spacing:8
+                                anchors.centerIn: parent
+                                Text{
+
+                                text: " Manual Listen"
+                                font.pixelSize: 14
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                                Rectangle{
+                                    height: 10
+                                    width: 10
+                                    radius: height/2
+                                    color:"red"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+                    }
+                }
+
+
+            Item{
+                Layout.preferredHeight: 16
+                width:1
+            }
+
+            Rectangle {
+                id: msgArea
+                width: 600
+                radius:16
+                // height: 64
+                color: "#cccccc"//ThemeConstants.colorInfo
+                border.color: "#5b5b5b"
+                border.width: 1.5
+
+                Layout.preferredHeight: 72
+                //Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter //| Qt.AlignVCenter
+                //visible:false
+                Column{
+                    anchors.centerIn: parent
+                    Text {
+                        id: voiceMsgLabel
+
+                        color:"#5b5b5b"//ThemeConstants.colorMsgFg
+                        text: root.activeCommand ? "" : "Comando non riconosciuto"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        //Layout.alignment: Qt.AlignHCenter
+                        //anchors.fill: parent
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        //lineHeight: 1.2
+                        opacity: 0.9
+                        font: Constants.fontMain
+                    }
+                    Text {
+
+
+                        color:"#5b5b5b"//ThemeConstants.colorMsgFg
+                        text:  root.listenedCommand
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        //Layout.alignment: Qt.AlignHCenter
+                        //anchors.fill: parent
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        //lineHeight: 1.2
+                        opacity: 0.9
+                        font: Constants.fontMain
+                    }
+                }
+                AlertMsg {
+                    id: alertMsg
+                    visible:false
+                    y: 56
+                    width: 572
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Row {
+                    id: progressMsgArea
+                    visible:false
+                    width: 240
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 32
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Text {
+                        id: progressMsg
+                        color: ThemeConstants.colorMsgFg
+                        text: qsTr("")
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        font: Constants.fontMain
+                        anchors.topMargin: 0
+                        anchors.bottomMargin: 0
+                    }
+                }
+            }
+
+
+            Item{
+                Layout.preferredHeight: 16
+                width:1
+            }
+            Item{
                 id: monitoringPage
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-
+                Layout.preferredHeight: 180
+                Layout.alignment: Qt.AlignHCenter
                 GridLayout {
                     id: currentParametersGrid
                     anchors.verticalCenter: parent.verticalCenter
@@ -130,171 +291,178 @@ Item {
                         Layout.fillWidth: true
                         unitLabel.text: "A"
                     }
+
                 }
+            }
+            Item{
+                Layout.fillHeight: true
+                width:1
             }
         }
 
-        Item {
-            id: actionArea
-            Layout.preferredHeight: 96
-            Layout.fillWidth: true
+    }
 
-            ActionAreaBg {
-                id: actionAreaBg
-                anchors.fill: parent
+    // InnerShadow{
+    //     source: bgEffect
+    //     anchors.fill:bgEffect
+    //     radius: 8.0
+    //     samples: 24
+    //     color: "red"
+    // }
+
+    Item {
+        id: actionArea
+        Layout.preferredHeight: 96
+        Layout.fillWidth: true
+
+        ActionAreaBg {
+            id: actionAreaBg
+            anchors.fill: parent
+        }
+
+        //            TabBar {
+        //                id: navLayout
+        //                currentIndex: 0
+        //                background: Item {}
+        //                anchors.centerIn: parent
+
+        //                NavBtn {
+        //                    text: "Readings"
+        //                    width: implicitWidth
+        //                }
+        //                NavBtn {
+        //                    width: implicitWidth
+        //                    text: "Config"
+        //                }
+        //            }
+        RowLayout {
+            id: actionRow
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.rightMargin: 16
+            anchors.leftMargin: 16
+            spacing: 50
+            ActionBtn {
+                id: decreaseNominalFreqBtn
+                //anchors.verticalCenter: parent.verticalCenter
+                //anchors.left: parent.left
+                text: "1 Hz"
+                icon.source: "businesscontrols/icons/remove_black_24dp.svg"
             }
 
-            //            TabBar {
-            //                id: navLayout
-            //                currentIndex: 0
-            //                background: Item {}
-            //                anchors.centerIn: parent
+            ActionBtn {
+                id: quitAppBtn
+                //anchors.verticalCenter: parent.verticalCenter
+                text: "Quit"
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                icon.source: "businesscontrols/icons/power_settings_new-24px.svg"
+            }
+            ActionBtn {
+                id: connectionBtn
+                checkable: true
+                text: "Conn"
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                icon.source: "businesscontrols/icons/close_black_24dp.svg"
+            }
 
-            //                NavBtn {
-            //                    text: "Readings"
-            //                    width: implicitWidth
-            //                }
-            //                NavBtn {
-            //                    width: implicitWidth
-            //                    text: "Config"
-            //                }
-            //            }
-            RowLayout {
-                id: actionRow
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.rightMargin: 16
-                anchors.leftMargin: 16
-                spacing: 50
-                ActionBtn {
-                    id: decreaseNominalFreqBtn
-                    //anchors.verticalCenter: parent.verticalCenter
-                    //anchors.left: parent.left
-                    text: "1 Hz"
-                    icon.source: "businesscontrols/icons/remove_black_24dp.svg"
-                }
-
-                ActionBtn {
-                    id: quitAppBtn
-                    //anchors.verticalCenter: parent.verticalCenter
-                    text: "Quit"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    icon.source: "businesscontrols/icons/power_settings_new-24px.svg"
-                }
-                ActionBtn {
-                    id: connectionBtn
-                    checkable: true
-                    text: "Conn"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                    icon.source: "businesscontrols/icons/close_black_24dp.svg"
-                }
-
-                ActionBtn {
-                    id: increaseNominalFreqBtn
-                    //nchors.verticalCenter: parent.verticalCenter
-                    //anchors.right: parent.right
-                    text: "1 Hz"
-                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    icon.source: "businesscontrols/icons/add_black_24dp.svg"
-                }
+            ActionBtn {
+                id: increaseNominalFreqBtn
+                //nchors.verticalCenter: parent.verticalCenter
+                //anchors.right: parent.right
+                text: "1 Hz"
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                icon.source: "businesscontrols/icons/add_black_24dp.svg"
             }
         }
     }
-
-    states: [
-        State {
-            name: "init"
-            PropertyChanges {
-                target: alertMsg
-                visible: false
-            }
-
-            PropertyChanges {
-                target: progressMsgArea
-                visible: false
-            }
-
-            PropertyChanges {
-                target: actualFreqReader
-                state: ""
-            }
-        },
-        State {
-            name: "sensorDataTooOld"
-
-            PropertyChanges {
-                target: alertMsg
-                visible: true
-                state: "error"
-                message: qsTr("Pressure and temperature values are too old.\nPlease check the connected device for any sensor-related issues.")
-            }
-
-            PropertyChanges {
-                target: progressMsgArea
-                visible: false
-            }
-
-            PropertyChanges {
-                target: actualFreqReader
-                state: ""
-            }
-
-            PropertyChanges {
-                target: motorVoltReader
-                state: ""
-            }
-
-            PropertyChanges {
-                target: currentReader
-                state: ""
-            }
-        },
-        State {
-            name: "sensorDataOld"
-
-            PropertyChanges {
-                target: alertMsg
-                visible: true
-                state: "warning"
-                message: "Pressure and temperature values are out of sync."
-            }
-
-            PropertyChanges {
-                target: progressMsgArea
-                visible: false
-            }
-        },
-        State {
-            name: "sensorDataRequesting"
-
-            PropertyChanges {
-                target: alertMsg
-                visible: true
-                color: ThemeConstants.colorInfo
-                message: ""
-            }
-
-            PropertyChanges {
-                target: progressMsg
-                text: qsTr("Requesting sensor data...")
-            }
-
-            PropertyChanges {
-                target: progressMsgArea
-                visible: true
-            }
-
-            PropertyChanges {
-                target: actualFreqReader
-                state: ""
-            }
-        }
-    ]
 }
 
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
+
+states: [
+State {
+    name: "init"
+    PropertyChanges {
+        target: alertMsg
+        visible: false
+    }
+
+    PropertyChanges {
+        target: progressMsgArea
+        visible: false
+    }
+
+    PropertyChanges {
+        target: actualFreqReader
+        state: ""
+    }
+},
+State {
+    name: "sensorDataTooOld"
+
+    PropertyChanges {
+        target: alertMsg
+        visible: true
+        state: "error"
+        message: qsTr("Pressure and temperature values are too old.\nPlease check the connected device for any sensor-related issues.")
+    }
+
+    PropertyChanges {
+        target: progressMsgArea
+        visible: false
+    }
+
+    PropertyChanges {
+        target: actualFreqReader
+        state: ""
+    }
+
+    PropertyChanges {
+        target: motorVoltReader
+        state: ""
+    }
+},
+State {
+    name: "sensorDataOld"
+
+    PropertyChanges {
+        target: alertMsg
+        visible: true
+        state: "warning"
+        message: "Pressure and temperature values are out of sync."
+    }
+
+    PropertyChanges {
+        target: progressMsgArea
+        visible: false
+    }
+},
+State {
+    name: "sensorDataRequesting"
+
+    PropertyChanges {
+        target: alertMsg
+        visible: true
+        color: ThemeConstants.colorInfo
+        message: ""
+    }
+
+    PropertyChanges {
+        target: progressMsg
+        text: qsTr("Requesting sensor data...")
+    }
+
+    PropertyChanges {
+        target: progressMsgArea
+        visible: true
+    }
+
+    PropertyChanges {
+        target: actualFreqReader
+        state: ""
+    }
 }
-##^##*/
+]
+}
+
+

@@ -2,51 +2,11 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
 import QtQuick.Layouts 1.15
-import FPZBlowerMonitorConf 1.0
+//import FPZBlowerMonitorConf 1.0
 import "../FPZBlowerMonitorConfUI"
 
 ReadCurrentInverterParamsTpl {
-    Row{
-        spacing: 6
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 80
-        Rectangle{
-            height: 10
-            width: 10
-            radius: height/2
-            color:voiceStore.detectedWakeWord ? "green" : "red"
-            anchors.verticalCenter: parent.verticalCenter
-        }
 
-        Text{
-            id: txtWakeWord
-            text: voiceStore.detectedWakeWord ? "DETECTED" : "NOT DETECTED"
-            color: voiceStore.detectedWakeWord ? "green" : "red"
-            anchors.verticalCenter: parent.verticalCenter
-        }
-        Text{
-            text: "-"
-            visible: txtDebug.visible
-            anchors.verticalCenter: parent.verticalCenter
-        }
-        Text{
-            id: txtDebug
-            visible: false
-            text: voiceStore.debug
-            color: voiceStore.detectedWakeWord ? "green" : "red"
-            anchors.verticalCenter: parent.verticalCenter
-        }
-Item{
- width:30
- height:1
-}
-        Button{
-            text: "Manual Listen"
-            anchors.verticalCenter: parent.verticalCenter
-            onClicked: clientActions.triggerWakeWord()
-        }
-    }
     id: readCurrentParamsView
     width: Constants.width
     height: Constants.height
@@ -71,7 +31,12 @@ Item{
     decreaseNominalFreqBtn.display: AbstractButton.TextBesideIcon
 
     statusBar.modbusConnectionIndicator.state: inveorStore.connStatus === "Connected" ? "connected" : ""
+    languageIndicator.text: voiceStore.language
 
+    activeCommand: voiceStore.activeCommand
+    listenedCommand: voiceStore.listenedCommand
 
+    manualListenBtn.onClicked: clientActions.triggerWakeWord()
 
 }
+

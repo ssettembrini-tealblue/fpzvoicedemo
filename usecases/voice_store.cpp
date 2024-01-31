@@ -138,7 +138,19 @@ bool VoiceStore::parseMsg(QString message)
     uint value=item["value"].toInt();//0;//here parse from the json the actual value;
     //qDebug() <<"value: " << value << "\n";
 
+
+
+
+
     int translatedMsg=translateMsg(item["action"].toString());
+
+    if(translatedMsg==1){
+        setActiveCommand(true);
+    }
+    else{
+        setActiveCommand(false);
+    }
+
     if(valuetype.toString()=="recognizer_loop:wakeword"){
         setDetectedWakeWord(true);
     }
@@ -174,6 +186,13 @@ bool VoiceStore::parseMsg(QString message)
         emit m_clientActions->decreaseNominalFrequency(value);
         qDebug() << "Decreased nominal frequency" << "\n";
         return true;
+    case 6:
+        if(value==0)
+            setLanguage("IT");
+        else if(value==1)
+            setLanguage("EN");
+        qDebug() << "Switch language" << "\n";
+        return true;
     default:
         qDebug() << "default" << "\n";
         return false;
@@ -196,6 +215,8 @@ int VoiceStore::translateMsg(QString message)
         return int(TypeMsg::Increase);
     else if(message=="decrease")
         return int(TypeMsg::Decrease);
+    else if(message=="switch")
+        return int(TypeMsg::Switch);
     else
         return int(TypeMsg::Unknown);
 
@@ -226,4 +247,43 @@ void VoiceStore::setDetectedWakeWord(bool newDetectedWakeWord)
         return;
     m_detectedWakeWord = newDetectedWakeWord;
     emit detectedWakeWordChanged();
+}
+
+QString VoiceStore::listenedCommand() const
+{
+    return m_listenedCommand;
+}
+
+void VoiceStore::setListenedCommand(const QString &newListenedCommand)
+{
+    if (m_listenedCommand == newListenedCommand)
+        return;
+    m_listenedCommand = newListenedCommand;
+    emit listenedCommandChanged();
+}
+
+bool VoiceStore::activeCommand() const
+{
+    return m_activeCommand;
+}
+
+void VoiceStore::setActiveCommand(const bool &newActiveCommand)
+{
+    if (m_activeCommand == newActiveCommand)
+        return;
+    m_activeCommand = newActiveCommand;
+    emit activeCommandChanged();
+}
+
+QString VoiceStore::language() const
+{
+    return m_language;
+}
+
+void VoiceStore::setLanguage(const QString &newLanguage)
+{
+    if (m_language == newLanguage)
+        return;
+    m_language = newLanguage;
+    emit languageChanged();
 }
