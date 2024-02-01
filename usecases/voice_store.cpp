@@ -116,39 +116,28 @@ void VoiceStore::onMsgListened(QString message)
 
 bool VoiceStore::parseMsg(QString message)
 {
-    //qDebug () << Q_FUNC_INFO << "\n";
-    //HERE PARSE MSG FROM WEBSOCKET
-    //QVariant fullMessage = QVariant(message);
+
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());//fromVariant(fullMessage);
     QJsonObject json = doc.object();
 
     QJsonValue valuetype = json.value("type");
-    //QJsonValue typeobj = valuetype["type"];
-    //qDebug() << "type: "<< valuetype.toString() << "\n";
-    //    if(valuetype.toString()!="fpzcontrol")
-    //        return false;
     QJsonValue valuedata = json.value("data");
-    //qDebug().noquote() << valuedata;
 
     QJsonObject item = valuedata.toObject();
-    //qDebug().noquote() << tr("value: ") << item["value"].toString();
 
-    //qDebug() << "action: " << item["action"].toString() << "\n";
-
-    uint value=item["value"].toInt();//0;//here parse from the json the actual value;
-    //qDebug() <<"value: " << value << "\n";
-
-
-
-
+    uint value=item["value"].toInt(); //here parse from the json the actual value;
+    QString msg=item["utterance"].toString();
 
     int translatedMsg=translateMsg(item["action"].toString());
 
-    if(translatedMsg==1){
-        setActiveCommand(true);
-    }
-    else{
+    if(valuetype.toString()=="mycroft.skills.fallback"){
+        setListenedCommand(msg);
         setActiveCommand(false);
+    }
+
+    if(valuetype.toString()=="fpzcontrol"){
+
+        setActiveCommand(true);
     }
 
     if(valuetype.toString()=="recognizer_loop:wakeword"){
@@ -157,6 +146,7 @@ bool VoiceStore::parseMsg(QString message)
     if(valuetype.toString()=="recognizer_loop:record_end"){
         setDetectedWakeWord(false);
     }
+
     setDebug(message.toUtf8());
 
     switch(translatedMsg){

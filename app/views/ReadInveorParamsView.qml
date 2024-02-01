@@ -16,7 +16,7 @@ ReadCurrentInverterParamsTpl {
     statusBar.connectedDeviceName.text: inveorStore.deviceId
     state: "init"
     visible: true
-    actualFreqReader.value: inveorStore.nomFreq//actualFrequency
+    actualFreqReader.value: inveorStore.actualFrequency
     motorVoltReader.value: inveorStore.motorVoltage
     motorCurrReader.value: inveorStore.motorCurrent
     alertMsg.message: inveorStore.msgStatus

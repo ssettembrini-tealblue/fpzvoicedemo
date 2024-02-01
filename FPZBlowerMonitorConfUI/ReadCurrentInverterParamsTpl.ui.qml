@@ -181,9 +181,9 @@ Item {
                     anchors.centerIn: parent
                     Text {
                         id: voiceMsgLabel
-
+                        //visible: !root.activeCommand
                         color:"#5b5b5b"//ThemeConstants.colorMsgFg
-                        text: root.activeCommand ? "" : "Comando non riconosciuto"
+                        text: root.activeCommand ? "Comando riconosciuto" : "Comando non riconosciuto"
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         //Layout.alignment: Qt.AlignHCenter
@@ -195,9 +195,9 @@ Item {
                     }
                     Text {
 
-
+                        visible: !root.activeCommand
                         color:"#5b5b5b"//ThemeConstants.colorMsgFg
-                        text:  root.listenedCommand
+                        text:  "\"" + root.listenedCommand + "\""
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         //Layout.alignment: Qt.AlignHCenter

@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     auto clientActions = new ClientActions(&app);
 
     //changed INVEOR TO MOCK INVEOR (SPS 2023)
-    auto inveorStore = new MockInveorStore(clientActions,&app);
+    auto inveorStore = new InveorStore(clientActions,&app);
     auto voiceStore = new VoiceStore(clientActions,&app);
     //clientActions->connectDevice();
     QQmlApplicationEngine engine;
