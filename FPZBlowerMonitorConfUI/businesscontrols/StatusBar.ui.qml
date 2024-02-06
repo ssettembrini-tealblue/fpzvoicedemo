@@ -9,6 +9,7 @@ Item {
     readonly property alias sensorDataUpdateStatus: sensorDataUpdateStatus
     readonly property alias btConnectionIndicator: btConnectionIndicator
     readonly property alias modbusConnectionIndicator: modbusConnectionIndicator
+    readonly property alias voiceConnectionIndicator: voiceConnectionIndicator
     property alias languageIndicator: languageIndicator
     implicitWidth: 640
     implicitHeight: 64
@@ -33,6 +34,11 @@ Item {
             sensorDataLastUpdateLabel.visible: false
             //anchors.left: parent.left
             //anchors.leftMargin: 16
+            anchors.verticalCenter: parent.verticalCenter
+        }
+        VoiceConnectionIndicator{
+            id: voiceConnectionIndicator
+            visible:false
             anchors.verticalCenter: parent.verticalCenter
         }
     }

@@ -32,6 +32,7 @@ ReadCurrentInverterParamsTpl {
 
     statusBar.modbusConnectionIndicator.state: inveorStore.connStatus === "Connected" ? "connected" : ""
     statusBar.languageIndicator.text: voiceStore.language
+    statusBar.voiceConnectionIndicator.state: voiceStore.reachable ? "connected" : "disabled"
     language: voiceStore.language
     activeCommand: voiceStore.activeCommand
     listenedCommand: voiceStore.listenedCommand

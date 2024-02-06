@@ -53,8 +53,8 @@ Item {
             Layout.fillWidth: true
             btConnectionIndicator.visible: false
             modbusConnectionIndicator.visible: true
-            sensorDataUpdateStatus.visible: true
-
+            sensorDataUpdateStatus.visible: false
+            voiceConnectionIndicator.visible: true
         }
 
         // Item {

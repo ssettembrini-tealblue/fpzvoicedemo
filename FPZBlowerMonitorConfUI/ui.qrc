@@ -113,6 +113,8 @@
         <file>ReadCurrentParamsSensorsTpl.ui.qml</file>
         <file>businesscontrols/icons/gb.svg</file>
         <file>businesscontrols/icons/it.svg</file>
+        <file>businesscontrols/VoiceConnectionIndicator.ui.qml</file>
+        <file>businesscontrols/icons/voice-recognition.svg</file>
     </qresource>
     <qresource prefix="/qt-project.org">
         <file>fonts/CourierPrime-Bold.ttf</file>
