@@ -162,13 +162,17 @@ Item {
                 target: unitLabel
                 opacity: 1
             }
+        },
+        State {
+            name: "disconnected"
+            PropertyChanges {
+                target: readerBg
+                color: "grey"
+                opacity: 0.9
+            }
         }
     ]
 }
 
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:2;height:180;width:180}
-}
-##^##*/
+
 

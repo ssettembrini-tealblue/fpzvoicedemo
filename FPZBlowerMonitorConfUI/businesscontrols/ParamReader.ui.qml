@@ -132,9 +132,14 @@ Item {
                 target: unitLabel
                 opacity: 1
             }
+        },
+        State {
+            name: "disconnected"
+            PropertyChanges {
+                target: readerBg
+                color: "grey"
+                opacity: 0.9
+            }
         }
     ]
 }
-
-
-

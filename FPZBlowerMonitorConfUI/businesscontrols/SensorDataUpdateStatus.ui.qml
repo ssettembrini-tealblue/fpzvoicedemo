@@ -5,6 +5,7 @@ import "themes"
 Row {
     id: sensorDataUpdateStatus
     property alias secs: secs
+    property alias sensorDataLastUpdateLabel: sensorDataLastUpdateLabel
     spacing: 8
     SensorDataUpdateIndicator {
         id: sensorDataUpdateIndicator

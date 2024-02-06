@@ -4,12 +4,14 @@ import QtGraphicalEffects 1.15
 import FPZBlowerMonitorConf 1.0
 
 Item {
-
+    id: root
     property alias image: image
     property bool down: false
     property Button control
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
+
+    opacity: root.enabled ? 1 : 0.5
     Row {
         id: row
         anchors.verticalCenterOffset: down ? 4 : 0
@@ -29,7 +31,7 @@ Item {
             anchors.verticalCenter: row.verticalCenter
             width: image.width
             height: image.height
-            color: Constants.colorError
+            color: root.enabled ? Constants.colorError : "grey"
         }
         Text {
             text: control.text

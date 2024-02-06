@@ -15,6 +15,34 @@ VoiceStore::VoiceStore(ClientActions* clientActions,QObject *parent)
     connect(&m_webSocket, &QWebSocket::connected, this, &VoiceStore::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &VoiceStore::onDisconnected);
 
+
+    m_checkConnectionTimer = new QTimer(this);
+    m_checkConnectionTimer->setInterval(5000);
+
+    connect(m_checkConnectionTimer, &QTimer::timeout, this, [this]{
+
+        if(m_msgCounter==0)
+        {
+            setReachable(false);
+        }
+        else {
+            setReachable(true);
+        }
+
+        QJsonObject jsonObj;
+        jsonObj.insert("type","skillmanager.list");//"mycroft.audio.service.list_backends");
+        jsonObj.insert("data","true");
+        QJsonDocument doc(jsonObj);
+        QByteArray jsonMessage(doc.toJson(QJsonDocument::Compact));
+        QString stringMessage = QString::fromUtf8(jsonMessage);
+        m_webSocket.sendTextMessage(stringMessage);
+
+        m_msgCounter=0;
+
+    });
+
+    m_checkConnectionTimer->start();
+
     connect(m_clientActions,&ClientActions::triggerWakeWord,this,&VoiceStore::onTriggeredWakeWord);
 
     connectWebsocket();
@@ -107,11 +135,44 @@ void VoiceStore::onDisconnected()
 
 void VoiceStore::onMsgListened(QString message)
 {
+    m_msgCounter+=1;
     qDebug() << m_webSocket.state();
     qDebug().noquote() << "Message received:" << message;
     if(parseMsg(message)){
         qDebug() << "Performed action";
     }
+}
+
+void VoiceStore::sendLanguageChange()
+{
+//     recognizer_loop:utterance
+//     STT has detected the given text or text was injected as an utterance via the CLI.
+//     Data:
+//      {
+//        "utterances": [text],
+//        "lang": self.stt.lang,
+//        "session": session_id
+//     }
+
+    QJsonObject dataObject
+        {
+            {"utterances", language()=="IT" ? "lingua inglese" : "language italian"},
+            {"lang", language()=="IT" ? "it-it" : "en-us"},
+            {"session","0"}
+        };
+
+
+    QJsonObject object
+        {
+            {"type", "recognizer_loop:utterance"},
+            {"data", dataObject}
+        };
+
+    QJsonDocument doc(object);
+
+    QByteArray jsonMessage(doc.toJson(QJsonDocument::Compact));
+    QString stringMessage = QString::fromUtf8(jsonMessage);
+    m_webSocket.sendTextMessage(stringMessage);
 }
 
 bool VoiceStore::parseMsg(QString message)
@@ -155,25 +216,35 @@ bool VoiceStore::parseMsg(QString message)
         return false;
     case 1:
         emit m_clientActions->startBlower();
+        setCommandName("StartBlower");
+        setCommandValue(0);
         qDebug() << "Started blower" << "\n";
 
         return true;
     case 2:
         emit m_clientActions->stopBlower();
+        setCommandName("StopBlower");
+        setCommandValue(0);
         qDebug() << "Stopped blower" << "\n";
         return true;
     case 3:
         //if(value<40){
         emit m_clientActions->writeNominalFrequency(value);
+        setCommandName("SetFrequency");
+        setCommandValue(value);
         qDebug() << "Written nominal frequency" << "\n";
         //}
         return true;
     case 4:
         emit m_clientActions->increaseNominalFrequency(value);
+        setCommandName("IncreaseFrequency");
+        setCommandValue(value);
         qDebug() << "Increased nominal frequency" << "\n";
         return true;
     case 5:
         emit m_clientActions->decreaseNominalFrequency(value);
+        setCommandName("DecreaseFrequency");
+        setCommandValue(value);
         qDebug() << "Decreased nominal frequency" << "\n";
         return true;
     case 6:
@@ -276,4 +347,43 @@ void VoiceStore::setLanguage(const QString &newLanguage)
         return;
     m_language = newLanguage;
     emit languageChanged();
+}
+
+QString VoiceStore::commandName() const
+{
+    return m_commandName;
+}
+
+void VoiceStore::setCommandName(const QString &newCommandName)
+{
+    if (m_commandName == newCommandName)
+        return;
+    m_commandName = newCommandName;
+    emit commandNameChanged();
+}
+
+uint VoiceStore::commandValue() const
+{
+    return m_commandValue;
+}
+
+void VoiceStore::setCommandValue(const uint &newCommandValue)
+{
+    if (m_commandValue == newCommandValue)
+        return;
+    m_commandValue = newCommandValue;
+    emit commandValueChanged();
+}
+
+bool VoiceStore::reachable() const
+{
+    return m_reachable;
+}
+
+void VoiceStore::setReachable(bool newReachable)
+{
+    if (m_reachable == newReachable)
+        return;
+    m_reachable = newReachable;
+    emit reachableChanged();
 }

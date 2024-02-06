@@ -6,7 +6,6 @@ import FPZBlowerMonitorConf 1.0
 import "./businesscontrols"
 import "./businesscontrols/themes"
 
-//import QtGraphicalEffects 1.12
 
 Item {
     id: root
@@ -24,9 +23,14 @@ Item {
     property alias increaseNominalFreqBtn: increaseNominalFreqBtn
     property alias actionRow: actionRow
     property alias manualListenBtn: manualListenBtn
-    property alias languageIndicator: statusBar.languageIndicator
+    property alias changeStateBtn: changeStateBtn
     property bool activeCommand
     property string listenedCommand
+    property string commandName
+    property int commandValue
+    property string language
+
+
 
     TemplateBg {
         id: templateBg
@@ -72,19 +76,20 @@ Item {
                     width:1
                 }
                 Row{
-
                     spacing: 10
                     //anchors.horizontalCenter: parent.horizontalCenter
                     //anchors.top: parent.top
                     //anchors.topMargin: 80
                     Layout.alignment: Qt.AlignHCenter
                     Rectangle{
+                        id: detectionBox
                         anchors.verticalCenter: parent.verticalCenter
                         width: 180
                         height: 40
                         radius: 12
-                        color: voiceStore.detectedWakeWord ? "#a0db8e" : "#ff6f69"
 
+                        color: enabled ? (voiceStore.detectedWakeWord ? "#a0db8e" : "#ff6f69") : "#cccccc"
+                        opacity: enabled ? 1 :0.8
                         Row{
                             anchors.centerIn: parent
                             // Rectangle{
@@ -158,8 +163,9 @@ Item {
                     // }
                     Button  {
                         id: manualListenBtn
+
                         anchors.verticalCenter: parent.verticalCenter
-                        //anchors.verticalCenterOffset: -2
+                        anchors.verticalCenterOffset: enabled ? -2 : 0
                         height: 32
                         width: 160
                         leftPadding: 15
@@ -171,9 +177,10 @@ Item {
                             height:32
                         }
                         contentItem: Row{
+                            opacity: enabled ? 1 : 0.5
                             spacing:8
                             anchors.centerIn: parent
-                            anchors.verticalCenterOffset: manualListenBtn.pressed ? 4 : 0
+                            anchors.verticalCenterOffset: manualListenBtn.pressed ? 2 : 0
                             Text{
 
                                 text: "Manual Listen"
@@ -187,10 +194,20 @@ Item {
                                 height: 10
                                 width: 10
                                 radius: height/2
-                                color:"red"
+                                color: enabled ? "red" : "grey"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
+
+                    }
+                    ActionBtn {
+                        id: changeStateBtn
+                        visible: false
+                        //nchors.verticalCenter: parent.verticalCenter
+                        //anchors.right: parent.right
+                        text: "Change"
+                        //Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                        icon.source: "businesscontrols/icons/add_black_24dp.svg"
                     }
                 }
 
@@ -202,11 +219,13 @@ Item {
 
                 Rectangle {
                     id: msgArea
+
                     width: 600
                     Layout.preferredWidth: currentParametersGrid.implicitWidth
                     radius:10//16
                     // height: 64
-                    color: ThemeConstants.colorInfo //"#cccccc"//
+                    color:  ThemeConstants.colorInfo //"#cccccc"//
+
                     //border.color: "#5b5b5b"
                     //border.width: 1.5
 
@@ -231,10 +250,10 @@ Item {
                             font: Constants.fontMain
                         }
                         Text {
-
-                            visible: !root.activeCommand
+                            id: voiceMsgValue
+                            //visible: !root.activeCommand
                             color:"#F5F4F4"//"#5b5b5b"//ThemeConstants.colorMsgFg
-                            text:  "\"" + root.listenedCommand + "\""
+                            text:  root.activeCommand ? root.commandName + (root.commandValue != 0 ? " - " + root.commandValue.toString() : "") : "\"" + root.listenedCommand + "\""
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             //Layout.alignment: Qt.AlignHCenter
@@ -310,6 +329,7 @@ Item {
 
                         ParamReader {
                             id: motorVoltReader
+
                             minWarningValue: 750
                             minErrorValue: 900
                             paramIcon.source: "businesscontrols/icons/power_black_24dp.svg"
@@ -321,6 +341,7 @@ Item {
 
                         ParamReader {
                             id: motorCurrReader
+
                             minWarningValue: 750
                             minErrorValue: 900
                             paramIcon.source: "businesscontrols/icons/bolt_black_24dp.svg"
@@ -391,6 +412,7 @@ Item {
 
                 ActionBtn {
                     id: quitAppBtn
+
                     //anchors.verticalCenter: parent.verticalCenter
                     text: "Quit"
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -412,6 +434,8 @@ Item {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                     icon.source: "businesscontrols/icons/add_black_24dp.svg"
                 }
+
+
             }
         }
     }
@@ -432,6 +456,17 @@ Item {
 
             PropertyChanges {
                 target: actualFreqReader
+                state: ""
+            }
+
+
+            PropertyChanges {
+                target: motorVoltReader
+                state: ""
+            }
+
+            PropertyChanges {
+                target: motorCurrReader
                 state: ""
             }
         },
@@ -459,6 +494,12 @@ Item {
                 target: motorVoltReader
                 state: ""
             }
+
+            PropertyChanges {
+                target: motorCurrReader
+                state: ""
+            }
+
         },
         State {
             name: "sensorDataOld"
@@ -498,6 +539,67 @@ Item {
             PropertyChanges {
                 target: actualFreqReader
                 state: ""
+            }
+
+
+            PropertyChanges {
+                target: motorVoltReader
+                state: ""
+            }
+
+            PropertyChanges {
+                target: motorCurrReader
+                state: ""
+            }
+        },
+        State {
+            name: "restarting"
+
+
+            PropertyChanges {
+                target: actualFreqReader
+                state: "disconnected"
+            }
+
+
+            PropertyChanges {
+                target: motorVoltReader
+                state: "disconnected"
+            }
+
+            PropertyChanges {
+                target: motorCurrReader
+                state: "disconnected"
+            }
+            PropertyChanges {
+                target: manualListenBtn
+                enabled: false
+            }
+
+            PropertyChanges {
+                target: actionArea
+                enabled: false
+            }
+
+            PropertyChanges {
+                target: detectionBox
+                enabled: false
+            }
+
+            PropertyChanges {
+                target: voiceMsgLabel
+                text: root.language=="IT" ? "Resettando il sistema" : "Restarting system"
+                font: Constants.fontMain
+            }
+
+            PropertyChanges {
+                target: voiceMsgValue
+                text: ""
+            }
+
+            PropertyChanges {
+                target: msgArea
+                color: Constants.colorError
             }
         }
     ]

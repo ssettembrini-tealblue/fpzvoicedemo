@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
 import QtQuick.Layouts 1.15
-//import FPZBlowerMonitorConf 1.0
+import FPZBlowerMonitorConf 1.0
 import "../FPZBlowerMonitorConfUI"
 
 ReadCurrentInverterParamsTpl {
@@ -14,7 +14,7 @@ ReadCurrentInverterParamsTpl {
     property string testDeviceName
     anchors.fill: parent
     statusBar.connectedDeviceName.text: inveorStore.deviceId
-    state: "init"
+    state: voiceStore.reachable ? "init" : "restarting"
     visible: true
     actualFreqReader.value: inveorStore.actualFrequency
     motorVoltReader.value: inveorStore.motorVoltage
@@ -31,10 +31,21 @@ ReadCurrentInverterParamsTpl {
     decreaseNominalFreqBtn.display: AbstractButton.TextBesideIcon
 
     statusBar.modbusConnectionIndicator.state: inveorStore.connStatus === "Connected" ? "connected" : ""
-    languageIndicator.text: voiceStore.language
-
+    statusBar.languageIndicator.text: voiceStore.language
+    language: voiceStore.language
     activeCommand: voiceStore.activeCommand
     listenedCommand: voiceStore.listenedCommand
+    commandName: voiceStore.commandName
+    commandValue: voiceStore.commandValue
+
+
+changeStateBtn.onClicked: {
+    if(readCurrentParamsView.state=="init"){
+        readCurrentParamsView.state="restarting"
+    }else{
+        readCurrentParamsView.state="init"
+    }
+    }
 
     manualListenBtn.onClicked: clientActions.triggerWakeWord()
 

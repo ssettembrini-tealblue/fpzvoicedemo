@@ -8,6 +8,7 @@
 #include <QJsonValue>
 #include <QWebSocket>
 #include "client_actions.h"
+#include <QTimer>
 
 enum class TypeMsg
 {
@@ -32,6 +33,9 @@ class VoiceStore : public QObject
     Q_PROPERTY(QString listenedCommand READ listenedCommand WRITE setListenedCommand NOTIFY listenedCommandChanged)
     Q_PROPERTY(bool activeCommand READ activeCommand WRITE setActiveCommand NOTIFY activeCommandChanged)
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
+    Q_PROPERTY(QString commandName READ commandName WRITE setCommandName NOTIFY commandNameChanged)
+    Q_PROPERTY(uint commandValue READ commandValue WRITE setCommandValue NOTIFY commandValueChanged)
+    Q_PROPERTY(bool reachable READ reachable WRITE setReachable NOTIFY reachableChanged FINAL)
 
 public:
     explicit VoiceStore(ClientActions* clientActions,QObject *parent = nullptr);
@@ -60,6 +64,15 @@ public:
     QString language() const;
     void setLanguage(const QString &newLanguage);
 
+    QString commandName() const;
+    void setCommandName(const QString &newCommandName);
+
+    uint commandValue() const;
+    void setCommandValue(const uint &newCommandValue);
+
+    bool reachable() const;
+    void setReachable(bool newReachable);
+
 signals:
     void connectionAddressChanged();
     void connectionPortChanged();
@@ -76,6 +89,12 @@ signals:
 
     void languageChanged();
 
+    void commandNameChanged();
+
+    void commandValueChanged();
+
+    void reachableChanged();
+
 private:
     void connectWebsocket();
     void disconnectWebsocket();
@@ -84,6 +103,8 @@ private:
     void onConnected();
     void onDisconnected();
     void onMsgListened(QString message);
+
+    void sendLanguageChange();
 
     bool parseMsg(QString message);
     int translateMsg(QString message);
@@ -96,9 +117,15 @@ private:
     ClientActions* m_clientActions;
     QString m_debug;
     bool m_detectedWakeWord {false};
-    QString m_listenedCommand {"---"};
+    QString m_listenedCommand {""};
     bool m_activeCommand{false};
     QString m_language{"IT"};
+    QString m_commandName;
+    uint m_commandValue;
+
+    QTimer* m_checkConnectionTimer;
+    uint m_msgCounter {0};
+    bool m_reachable {true};
 };
 
 #endif // VOICE_STORE_H
