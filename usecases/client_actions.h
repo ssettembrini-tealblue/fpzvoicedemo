@@ -14,6 +14,7 @@ signals:
     void stopBtDeviceDiscovery();
 
     void triggerWakeWord();
+    void switchLanguage();
 
     void connectDevice();
     //void writeParameters(int value);

@@ -23,10 +23,13 @@ VoiceStore::VoiceStore(ClientActions* clientActions,QObject *parent)
 
         if(m_msgCounter==0)
         {
-            setReachable(false);
+            setReachableMycroft(false);
         }
         else {
-            setReachable(true);
+            setRestarting(false);
+            setReachableMycroft(true);
+            setReachableStt(true);
+
         }
 
         QJsonObject jsonObj;
@@ -44,6 +47,7 @@ VoiceStore::VoiceStore(ClientActions* clientActions,QObject *parent)
     m_checkConnectionTimer->start();
 
     connect(m_clientActions,&ClientActions::triggerWakeWord,this,&VoiceStore::onTriggeredWakeWord);
+    connect(m_clientActions,&ClientActions::switchLanguage,this,&VoiceStore::onSwitchLanguage);
 
     connectWebsocket();
 
@@ -143,7 +147,7 @@ void VoiceStore::onMsgListened(QString message)
     }
 }
 
-void VoiceStore::sendLanguageChange()
+void VoiceStore::onSwitchLanguage()
 {
 //     recognizer_loop:utterance
 //     STT has detected the given text or text was injected as an utterance via the CLI.
@@ -173,6 +177,10 @@ void VoiceStore::sendLanguageChange()
     QByteArray jsonMessage(doc.toJson(QJsonDocument::Compact));
     QString stringMessage = QString::fromUtf8(jsonMessage);
     m_webSocket.sendTextMessage(stringMessage);
+
+    setLanguage(language()=="IT" ? "EN" : "IT" );
+    setRestarting(true);
+    m_checkConnectionTimer->start();
 }
 
 bool VoiceStore::parseMsg(QString message)
@@ -197,7 +205,6 @@ bool VoiceStore::parseMsg(QString message)
     }
 
     if(valuetype.toString()=="fpzcontrol"){
-
         setActiveCommand(true);
     }
 
@@ -206,6 +213,10 @@ bool VoiceStore::parseMsg(QString message)
     }
     if(valuetype.toString()=="recognizer_loop:record_end"){
         setDetectedWakeWord(false);
+    }
+
+    if(valuetype.toString()=="enclosure.notify.no_internet"){
+        setReachableStt(false);
     }
 
     setDebug(message.toUtf8());
@@ -253,6 +264,8 @@ bool VoiceStore::parseMsg(QString message)
         else if(value==1)
             setLanguage("EN");
         qDebug() << "Switch language" << "\n";
+        setRestarting(true);
+        m_checkConnectionTimer->start();
         return true;
     default:
         qDebug() << "default" << "\n";
@@ -375,15 +388,42 @@ void VoiceStore::setCommandValue(const uint &newCommandValue)
     emit commandValueChanged();
 }
 
-bool VoiceStore::reachable() const
+bool VoiceStore::reachableMycroft() const
 {
-    return m_reachable;
+    return m_reachableMycroft;
 }
 
-void VoiceStore::setReachable(bool newReachable)
+void VoiceStore::setReachableMycroft(bool newReachable)
 {
-    if (m_reachable == newReachable)
+    if (m_reachableMycroft == newReachable)
         return;
-    m_reachable = newReachable;
-    emit reachableChanged();
+    m_reachableMycroft = newReachable;
+    emit reachableMycroftChanged();
+}
+
+
+bool VoiceStore::restarting() const
+{
+    return m_restarting;
+}
+
+void VoiceStore::setRestarting(bool newRestarting)
+{
+    if (m_restarting == newRestarting)
+        return;
+    m_restarting = newRestarting;
+    emit restartingChanged();
+}
+
+bool VoiceStore::reachableStt() const
+{
+    return m_reachableStt;
+}
+
+void VoiceStore::setReachableStt(bool newReachableStt)
+{
+    if (m_reachableStt == newReachableStt)
+        return;
+    m_reachableStt = newReachableStt;
+    emit reachableSttChanged();
 }

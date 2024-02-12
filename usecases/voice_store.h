@@ -35,8 +35,9 @@ class VoiceStore : public QObject
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QString commandName READ commandName WRITE setCommandName NOTIFY commandNameChanged)
     Q_PROPERTY(uint commandValue READ commandValue WRITE setCommandValue NOTIFY commandValueChanged)
-    Q_PROPERTY(bool reachable READ reachable WRITE setReachable NOTIFY reachableChanged FINAL)
-
+    Q_PROPERTY(bool reachableMycroft READ reachableMycroft WRITE setReachableMycroft NOTIFY reachableMycroftChanged FINAL)
+    Q_PROPERTY(bool reachableStt READ reachableStt WRITE setReachableStt NOTIFY reachableSttChanged FINAL)
+    Q_PROPERTY(bool restarting READ restarting WRITE setRestarting NOTIFY restartingChanged FINAL)
 public:
     explicit VoiceStore(ClientActions* clientActions,QObject *parent = nullptr);
 
@@ -70,8 +71,14 @@ public:
     uint commandValue() const;
     void setCommandValue(const uint &newCommandValue);
 
-    bool reachable() const;
-    void setReachable(bool newReachable);
+    bool reachableMycroft() const;
+    void setReachableMycroft(bool newReachable);
+
+    bool restarting() const;
+    void setRestarting(bool newRestarting);
+
+    bool reachableStt() const;
+    void setReachableStt(bool newReachableStt);
 
 signals:
     void connectionAddressChanged();
@@ -93,7 +100,11 @@ signals:
 
     void commandValueChanged();
 
-    void reachableChanged();
+    void restartingChanged();
+
+    void reachableSttChanged();
+
+    void reachableMycroftChanged();
 
 private:
     void connectWebsocket();
@@ -104,7 +115,7 @@ private:
     void onDisconnected();
     void onMsgListened(QString message);
 
-    void sendLanguageChange();
+    void onSwitchLanguage();
 
     bool parseMsg(QString message);
     int translateMsg(QString message);
@@ -125,7 +136,9 @@ private:
 
     QTimer* m_checkConnectionTimer;
     uint m_msgCounter {0};
-    bool m_reachable {true};
+    bool m_restarting {false};
+    bool m_reachableStt{true};
+    bool m_reachableMycroft{true};
 };
 
 #endif // VOICE_STORE_H

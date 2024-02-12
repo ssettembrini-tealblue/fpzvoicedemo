@@ -14,7 +14,7 @@ ReadCurrentInverterParamsTpl {
     property string testDeviceName
     anchors.fill: parent
     statusBar.connectedDeviceName.text: inveorStore.deviceId
-    state: voiceStore.reachable ? "init" : "restarting"
+    state: voiceStore.restarting ? "restarting" : ((voiceStore.reachableMycroft && voiceStore.reachableStt) ? "init" : "inactive")
     visible: true
     actualFreqReader.value: inveorStore.actualFrequency
     motorVoltReader.value: inveorStore.motorVoltage
@@ -31,8 +31,11 @@ ReadCurrentInverterParamsTpl {
     decreaseNominalFreqBtn.display: AbstractButton.TextBesideIcon
 
     statusBar.modbusConnectionIndicator.state: inveorStore.connStatus === "Connected" ? "connected" : ""
-    statusBar.languageIndicator.text: voiceStore.language
-    statusBar.voiceConnectionIndicator.state: voiceStore.reachable ? "connected" : "disabled"
+    statusBar.language: voiceStore.language
+    statusBar.voiceConnectionIndicator.state: (voiceStore.reachableMycroft && voiceStore.reachableStt) ? "connected" : "disabled"
+
+    statusBar.changeLanguageBtn.onClicked: clientActions.switchLanguage()
+
     language: voiceStore.language
     activeCommand: voiceStore.activeCommand
     listenedCommand: voiceStore.listenedCommand

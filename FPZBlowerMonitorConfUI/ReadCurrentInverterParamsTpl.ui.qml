@@ -161,45 +161,7 @@ Item {
                     //         }
                     //     }
                     // }
-                    Button  {
-                        id: manualListenBtn
 
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.verticalCenterOffset: enabled ? -2 : 0
-                        height: 32
-                        width: 160
-                        leftPadding: 15
-                        rightPadding: 15
-                        display: icon.source==="" ? AbstractButton.TextBesideIcon : AbstractButton.TextOnly
-                        //icon.source: "icons/power_settings_new-24px.svg"
-                        background: ActionBtnBg {
-                            down: manualListenBtn.pressed
-                            height:32
-                        }
-                        contentItem: Row{
-                            opacity: enabled ? 1 : 0.5
-                            spacing:8
-                            anchors.centerIn: parent
-                            anchors.verticalCenterOffset: manualListenBtn.pressed ? 2 : 0
-                            Text{
-
-                                text: "Manual Listen"
-                                font.capitalization: Font.AllUppercase
-                                font.family: Constants.fontMain.family
-                                font.weight: Constants.fontMain.weight
-                                font.pixelSize:  13
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                            Rectangle{
-                                height: 10
-                                width: 10
-                                radius: height/2
-                                color: enabled ? "red" : "grey"
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-
-                    }
                     ActionBtn {
                         id: changeStateBtn
                         visible: false
@@ -418,6 +380,46 @@ Item {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     icon.source: "businesscontrols/icons/power_settings_new-24px.svg"
                 }
+                Button  {
+                    id: manualListenBtn
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    //anchors.verticalCenter: parent.verticalCenter
+                    anchors.verticalCenterOffset: enabled ? -2 : 0
+                    //height: 32
+                    width: 180
+                    leftPadding: 15
+                    rightPadding: 15
+                    display: icon.source==="" ? AbstractButton.TextBesideIcon : AbstractButton.TextOnly
+                    //icon.source: "icons/power_settings_new-24px.svg"
+                    background: ActionBtnBg {
+                        down: manualListenBtn.pressed
+                        width: 160
+                        //height:32
+                    }
+                    contentItem: Row{
+                        opacity: enabled ? 1 : 0.5
+                        spacing:8
+                        anchors.centerIn: parent
+                        anchors.verticalCenterOffset: manualListenBtn.pressed ? 2 : 0
+                        Text{
+
+                            text: "Manual Listen"
+                            font.capitalization: Font.AllUppercase
+                            font.family: Constants.fontMain.family
+                            font.weight: Constants.fontMain.weight
+                            font.pixelSize:  13
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Rectangle{
+                            height: 10
+                            width: 10
+                            radius: height/2
+                            color: enabled ? "red" : "grey"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+                }
                 ActionBtn {
                     id: connectionBtn
                     checkable: true
@@ -556,30 +558,40 @@ Item {
             name: "restarting"
 
 
-            PropertyChanges {
-                target: actualFreqReader
-                state: "disconnected"
-            }
+            // PropertyChanges {
+            //     target: actualFreqReader
+            //     state: "disconnected"
+            // }
 
 
-            PropertyChanges {
-                target: motorVoltReader
-                state: "disconnected"
-            }
+            // PropertyChanges {
+            //     target: motorVoltReader
+            //     state: "disconnected"
+            // }
 
-            PropertyChanges {
-                target: motorCurrReader
-                state: "disconnected"
-            }
+            // PropertyChanges {
+            //     target: motorCurrReader
+            //     state: "disconnected"
+            // }
             PropertyChanges {
                 target: manualListenBtn
                 enabled: false
             }
 
-            PropertyChanges {
-                target: actionArea
-                enabled: false
-            }
+            // PropertyChanges {
+            //     target: decreaseNominalFreqBtn
+            //     enabled: false
+            // }
+
+            // PropertyChanges {
+            //     target: connectionBtn
+            //     enabled: false
+            // }
+
+            // PropertyChanges {
+            //     target: increaseNominalFreqBtn
+            //     enabled: false
+            // }
 
             PropertyChanges {
                 target: detectionBox
@@ -589,6 +601,66 @@ Item {
             PropertyChanges {
                 target: voiceMsgLabel
                 text: root.language=="IT" ? "Resettando il sistema" : "Restarting system"
+                font: Constants.fontMain
+            }
+
+            PropertyChanges {
+                target: voiceMsgValue
+                text: ""
+            }
+
+            PropertyChanges {
+                target: msgArea
+                color: Constants.colorError
+            }
+        },
+        State {
+            name: "inactive"
+
+
+            // PropertyChanges {
+            //     target: actualFreqReader
+            //     state: "disconnected"
+            // }
+
+
+            // PropertyChanges {
+            //     target: motorVoltReader
+            //     state: "disconnected"
+            // }
+
+            // PropertyChanges {
+            //     target: motorCurrReader
+            //     state: "disconnected"
+            // }
+            PropertyChanges {
+                target: manualListenBtn
+                enabled: false
+            }
+
+            // PropertyChanges {
+            //     target: decreaseNominalFreqBtn
+            //     enabled: false
+            // }
+
+            // PropertyChanges {
+            //     target: connectionBtn
+            //     enabled: false
+            // }
+
+            // PropertyChanges {
+            //     target: increaseNominalFreqBtn
+            //     enabled: false
+            // }
+
+            PropertyChanges {
+                target: detectionBox
+                enabled: false
+            }
+
+            PropertyChanges {
+                target: voiceMsgLabel
+                text: root.language=="IT" ? "Sistema inattivo" : "Inactive system"
                 font: Constants.fontMain
             }
 
