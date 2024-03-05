@@ -8,8 +8,8 @@ Item {
     width: 180
     height: 180
     property real value
-    property real minWarningValue: 100
-    property real minErrorValue: 100
+    property real minWarningValue: 30
+    property real minErrorValue: 45
     property real minimumValue: 0
     property real maximumValue: 100
     property alias paramIcon: paramIcon

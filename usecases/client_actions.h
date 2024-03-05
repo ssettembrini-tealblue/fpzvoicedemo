@@ -15,6 +15,7 @@ signals:
 
     void triggerWakeWord();
     void switchLanguage();
+    void checkLanguage();
 
     void connectDevice();
     //void writeParameters(int value);

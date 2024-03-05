@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonArray>
 #include <QWebSocket>
 #include "client_actions.h"
 #include <QTimer>
@@ -18,7 +19,15 @@ enum class TypeMsg
     Increase = 4,
     Decrease = 5,
     Switch = 6,
+    CheckLang = 7,
     Unknown = 0
+};
+
+enum class Lang{
+    Italian = 1,
+    English = 2,
+    Unknown = 0
+
 };
 
 
@@ -35,8 +44,14 @@ class VoiceStore : public QObject
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QString commandName READ commandName WRITE setCommandName NOTIFY commandNameChanged)
     Q_PROPERTY(uint commandValue READ commandValue WRITE setCommandValue NOTIFY commandValueChanged)
+    Q_PROPERTY(uint msgCounter READ msgCounter WRITE setMsgCounter NOTIFY msgCounterChanged)
+
+    Q_PROPERTY(bool receivedMsg READ receivedMsg WRITE setReceivedMsg NOTIFY receivedMsgChanged)
+
+    Q_PROPERTY(bool websocketValid READ websocketValid WRITE setWebsocketValid NOTIFY websocketValidChanged)
     Q_PROPERTY(bool reachableMycroft READ reachableMycroft WRITE setReachableMycroft NOTIFY reachableMycroftChanged FINAL)
     Q_PROPERTY(bool reachableStt READ reachableStt WRITE setReachableStt NOTIFY reachableSttChanged FINAL)
+    Q_PROPERTY(bool reachableSkills READ reachableSkills WRITE setReachableSkills NOTIFY reachableSkillsChanged FINAL)
     Q_PROPERTY(bool restarting READ restarting WRITE setRestarting NOTIFY restartingChanged FINAL)
 public:
     explicit VoiceStore(ClientActions* clientActions,QObject *parent = nullptr);
@@ -80,6 +95,21 @@ public:
     bool reachableStt() const;
     void setReachableStt(bool newReachableStt);
 
+    uint msgCounter() const;
+    void setMsgCounter(uint newMsgCounter);
+
+    bool websocketValid() const;
+    void setWebsocketValid(bool websocketValid);
+
+    bool reachableSkills() const;
+
+
+    void setReachableSkills(bool reachableSkills);
+
+    bool receivedMsg() const;
+
+    void setReceivedMsg(bool receivedMsg);
+
 signals:
     void connectionAddressChanged();
     void connectionPortChanged();
@@ -106,6 +136,14 @@ signals:
 
     void reachableMycroftChanged();
 
+    void msgCounterChanged();
+
+    void websocketValidChanged();
+
+    void reachableSkillsChanged();
+
+    void receivedMsgChanged();
+
 private:
     void connectWebsocket();
     void disconnectWebsocket();
@@ -115,7 +153,11 @@ private:
     void onDisconnected();
     void onMsgListened(QString message);
 
+
     void onSwitchLanguage();
+
+    void onCheckLanguage();
+    void onCheckSkillsLoad();
 
     bool parseMsg(QString message);
     int translateMsg(QString message);
@@ -135,10 +177,18 @@ private:
     uint m_commandValue;
 
     QTimer* m_checkConnectionTimer;
+    QTimer* m_checkSttTimer;
+    QTimer* m_checkReceivedTimer;
+
     uint m_msgCounter {0};
+    uint m_sttUnreachableCounter {0};
     bool m_restarting {false};
-    bool m_reachableStt{true};
-    bool m_reachableMycroft{true};
+    bool m_reachableStt{false};
+    bool m_reachableMycroft{false};
+    bool m_websocketValid{false};
+    bool m_reachableSkills{false};
+    bool m_receivedMsg{false};
+    uint m_connectingMsgCount{0};
 };
 
 #endif // VOICE_STORE_H

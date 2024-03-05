@@ -14,7 +14,7 @@ ReadCurrentInverterParamsTpl {
     property string testDeviceName
     anchors.fill: parent
     statusBar.connectedDeviceName.text: inveorStore.deviceId
-    state: voiceStore.restarting ? "restarting" : ((voiceStore.reachableMycroft && voiceStore.reachableStt) ? "init" : "inactive")
+    state: voiceStore.restarting ? "restarting" : ((voiceStore.reachableMycroft && voiceStore.reachableStt) ? (voiceStore.reachableSkills ? "init" : "inactiveskill") : "inactive")
     visible: true
     actualFreqReader.value: inveorStore.actualFrequency
     motorVoltReader.value: inveorStore.motorVoltage
@@ -31,27 +31,35 @@ ReadCurrentInverterParamsTpl {
     decreaseNominalFreqBtn.display: AbstractButton.TextBesideIcon
 
     statusBar.modbusConnectionIndicator.state: inveorStore.connStatus === "Connected" ? "connected" : ""
-    statusBar.language: voiceStore.language
     statusBar.voiceConnectionIndicator.state: (voiceStore.reachableMycroft && voiceStore.reachableStt) ? "connected" : "disabled"
-
-    statusBar.changeLanguageBtn.onClicked: clientActions.switchLanguage()
-
+    //manualDetectionTimer.onTriggered: //detectedWakeWord=undefined
+    manualListenBtn.onClicked: clientActions.triggerWakeWord()
+    changeLanguageBtn.onClicked: clientActions.switchLanguage()
+    debug: voiceStore.debug
     language: voiceStore.language
-    activeCommand: voiceStore.activeCommand
-    listenedCommand: voiceStore.listenedCommand
     commandName: voiceStore.commandName
     commandValue: voiceStore.commandValue
+    detectedWakeWord: voiceStore.detectedWakeWord
+    activeCommand: voiceStore.activeCommand
+    listenedCommand: voiceStore.listenedCommand
+    visibleBox: voiceStore.receivedMsg
+    checkLanguageBtn.onClicked: clientActions.checkLanguage()
 
-
-changeStateBtn.onClicked: {
-    if(readCurrentParamsView.state=="init"){
-        readCurrentParamsView.state="restarting"
-    }else{
-        readCurrentParamsView.state="init"
+    //Testing on cmd injection
+    inject.onClicked:{
+        listenedCommand= "changed"
     }
+    //Testing on manual state change
+    changeStateBtn.onClicked: {
+        if(readCurrentParamsView.state=="init"){
+            readCurrentParamsView.state="restarting"
+        }else{
+            readCurrentParamsView.state="init"
+        }
     }
 
-    manualListenBtn.onClicked: clientActions.triggerWakeWord()
+
+
 
 }
 
