@@ -319,10 +319,12 @@ VoiceStore::VoiceStore(ClientActions* clientActions,QObject *parent)
         }
 
         if(valuetype.toString()=="mycroft.skills.fallback"){
+            if(reachableSkills()){
             setListenedCommand(msg);
             setActiveCommand(false);
             setReceivedMsg(true);
             m_checkReceivedTimer->start();
+            }
         }
 
         if(valuetype.toString()=="fpzcontrol"){
