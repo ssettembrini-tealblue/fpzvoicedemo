@@ -36,8 +36,8 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
     connect(m_clientActions, &ClientActions::writeNominalFrequency,this,[this](uint value){
         //if(value<40){
 
-            setNominalFrequency(value);
-            m_inveor_inverter.writeNominalFrequency(value);
+        setNominalFrequency(value);
+        m_inveor_inverter.writeNominalFrequency(value);
         //}
         emit commStatusChanged();
     });
@@ -48,26 +48,33 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::startBlower,this,[this](){
         if(actualFrequency()==0){//if(nomFrequency()==0){
-            setNominalFrequency(10);//minFrequency());
+            setNominalFrequency(10);
+            //setNominalFrequency(10);//minFrequency());
             m_inveor_inverter.writeNominalFrequency(10);//minFrequency());
             emit commStatusChanged();
         }
     });
     connect(m_clientActions, &ClientActions::increaseNominalFrequency,this,[this](uint step){
-        uint increasedvalue= nomFreq() + step;
-        //if(increasedvalue<40){
-            setNominalFrequency(increasedvalue);
-            m_inveor_inverter.writeNominalFrequency(increasedvalue);
-        //}
+        uint increasedvalue= nomFreq() + step ;
+        qDebug() << "nomFreq() = " << nomFreq();
+        qDebug() << "nominal increased value = " << increasedvalue;
+        setNominalFrequency(increasedvalue);
+        m_inveor_inverter.writeNominalFrequency(increasedvalue);
+
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::decreaseNominalFrequency,this,[this](uint step){
 
-        if(nomFreq()>step){
+        if(nomFreq()>=step){
 
             uint decreasedvalue = nomFreq() - step;
             setNominalFrequency(decreasedvalue);
             m_inveor_inverter.writeNominalFrequency(decreasedvalue);
+            emit commStatusChanged();
+        }
+        else{
+            setNominalFrequency(0);
+            m_inveor_inverter.writeNominalFrequency(0);
             emit commStatusChanged();
         }
 

@@ -60,7 +60,7 @@ void InveorInverter::sendError(modbusError error,QModbusReply *reply)
         break;
     case modbusError::ProtocolWrite:
         setStatus(QObject::tr("Write response error: %1 (Modbus exception: 0x%2)")
-                  .arg(reply->errorString()).arg(reply->rawResult().exceptionCode(), -1, 16));
+                      .arg(reply->errorString()).arg(reply->rawResult().exceptionCode(), -1, 16));
 
         break;
     case modbusError::Write:
@@ -195,8 +195,8 @@ void InveorInverter::setupConnection(int id, QString port, BaudRate baud, Parity
     setStopBits(stop);
     setParity(par);
 
-        m_modbusDevice->setTimeout(timeout());
-        m_modbusDevice->setNumberOfRetries(numberRetries());
+    m_modbusDevice->setTimeout(timeout());
+    m_modbusDevice->setNumberOfRetries(numberRetries());
 
 }
 
@@ -220,7 +220,7 @@ void InveorInverter::setParity(Parity par)
 }
 
 void InveorInverter::setDataBits(DataBits data)
-{ 
+{
 
     m_dataBits=data;
     m_modbusDevice->setConnectionParameter(QModbusDevice::SerialDataBitsParameter,
@@ -283,7 +283,16 @@ void InveorInverter::setTimeout(int timeout)
 bool InveorInverter::writeNominalFrequency(uint value)
 {
     qDebug() << Q_FUNC_INFO;
-    qint16 val=value*10;
+
+    qint16 val;
+
+    if(value==0){
+        val=0;
+    }
+    else{
+        val=(value+1)*10;
+    }
+    //qDebug() << "nominal value * 10 = " << val;
     QBitArray ba(16);
     ba.setBit(0, true);
     ba.setBit(1, true);
@@ -433,7 +442,13 @@ bool InveorInverter::readActualFrequency()
                 if (reply->error() == QModbusDevice::NoError) {
                     const QModbusDataUnit unit = reply->result();
                     for (int i = 0, total = int(unit.valueCount()); i < total; ++i) {
-                        setReadActualFrequency(unit.value(i)/10);
+
+                        //qDebug() << "unit.value(i)/10 = " << unit.value(i)/10;
+                        float actualValue = unit.value(i)/10;
+                        //qDebug() << "std::ceil(actualValue) = " << std::ceil(actualValue);
+
+                        setReadActualFrequency(std::ceil(actualValue));
+
                     }
                     return 1;
                 } else if (reply->error() == QModbusDevice::ProtocolError) {
