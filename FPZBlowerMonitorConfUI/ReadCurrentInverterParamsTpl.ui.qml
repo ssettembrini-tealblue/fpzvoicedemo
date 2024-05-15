@@ -32,7 +32,11 @@ Item {
     property alias inject: injectMsg
     property alias txtCounterMsg: txtCounterMsg
     property alias txtWebsocketValid: txtWebsocketValid
+    property alias infoOverlayRegion: infoOverlayRegion
+    property alias infoOverlay: infoOverlay
+
     property bool detectedWakeWord: false
+
 
     property bool activeCommand
     property string listenedCommand
@@ -896,6 +900,32 @@ Item {
             }
         }
     ]
+
+    Rectangle{
+        id: filler
+        visible: false
+    }
+
+    Popup {
+        id: infoOverlayRegion
+        //visible: false
+        anchors.centerIn: parent
+        implicitWidth:500
+        implicitHeight: 440
+        modal: true
+        focus: true
+        padding: 0
+        contentItem: Item {
+            InfoOverlayTpl{
+                id: infoOverlay
+                visible: true
+                anchors.fill: parent
+            }
+        }
+        background: Item {}
+
+    }
+
 }
 
 

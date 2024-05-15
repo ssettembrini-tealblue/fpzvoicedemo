@@ -29,7 +29,10 @@ ReadCurrentInverterParamsTpl {
     quitAppBtn.display: AbstractButton.TextBesideIcon
     increaseNominalFreqBtn.display: AbstractButton.TextBesideIcon
     decreaseNominalFreqBtn.display: AbstractButton.TextBesideIcon
-
+    statusBar.infoBtn.onClicked:{
+        infoOverlayRegion.open()
+    }
+    infoOverlay.lang: voiceStore.language
     statusBar.modbusConnectionIndicator.state: inveorStore.connStatus === "Connected" ? "connected" : ""
     statusBar.voiceConnectionIndicator.state: (voiceStore.reachableMycroft && voiceStore.reachableStt) ? "connected" : "disabled"
     //manualDetectionTimer.onTriggered: //detectedWakeWord=undefined

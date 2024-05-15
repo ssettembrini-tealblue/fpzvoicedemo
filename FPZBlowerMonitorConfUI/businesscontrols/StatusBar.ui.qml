@@ -11,7 +11,7 @@ Item {
     readonly property alias btConnectionIndicator: btConnectionIndicator
     readonly property alias modbusConnectionIndicator: modbusConnectionIndicator
     readonly property alias voiceConnectionIndicator: voiceConnectionIndicator
-
+    readonly property alias infoBtn: infoBtn
 
     implicitWidth: 640
     implicitHeight: 64
@@ -56,6 +56,16 @@ Item {
 
     BtConnectionIndicator {
         id: btConnectionIndicator
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 16
+    }
+    IconBtn{
+        id: infoBtn
+        icon.name: "info-circle"
+        height: 48
+        width: 48
+        color: ThemeConstants.colorInfo
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 16

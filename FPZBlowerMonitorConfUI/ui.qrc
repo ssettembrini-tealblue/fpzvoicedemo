@@ -115,6 +115,12 @@
         <file>businesscontrols/icons/it.svg</file>
         <file>businesscontrols/VoiceConnectionIndicator.ui.qml</file>
         <file>businesscontrols/icons/voice-recognition.svg</file>
+        <file>businesscontrols/icons/info-circle.svg</file>
+        <file>businesscontrols/Icon.qml</file>
+        <file>businesscontrols/IconBtn.ui.qml</file>
+        <file>InfoOverlayTpl.qml</file>
+        <file>businesscontrols/DataConstants.qml</file>
+        <file>businesscontrols/qmldir</file>
     </qresource>
     <qresource prefix="/qt-project.org">
         <file>fonts/CourierPrime-Bold.ttf</file>
