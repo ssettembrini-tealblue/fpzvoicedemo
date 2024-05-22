@@ -13,7 +13,7 @@ ReadCurrentInverterParamsTpl {
     property bool sensorDataIsComing: false
     property string testDeviceName
     anchors.fill: parent
-    statusBar.connectedDeviceName.text: inveorStore.deviceId
+    statusBar.connectedDeviceName.text: ""//inveorStore.deviceId
     state: voiceStore.restarting ? "restarting" : ((voiceStore.reachableMycroft && voiceStore.reachableStt) ? (voiceStore.reachableSkills ? "init" : "inactiveskill") : "inactive")
     visible: true
     actualFreqReader.value: inveorStore.actualFrequency
@@ -29,7 +29,8 @@ ReadCurrentInverterParamsTpl {
     quitAppBtn.display: AbstractButton.TextBesideIcon
     increaseNominalFreqBtn.display: AbstractButton.TextBesideIcon
     decreaseNominalFreqBtn.display: AbstractButton.TextBesideIcon
-    statusBar.infoBtn.onClicked:{
+    //statusBar.
+    infoBtn.onClicked:{
         infoOverlayRegion.open()
     }
     infoOverlay.lang: voiceStore.language

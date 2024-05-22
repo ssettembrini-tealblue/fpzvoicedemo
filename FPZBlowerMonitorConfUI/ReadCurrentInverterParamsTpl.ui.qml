@@ -34,6 +34,7 @@ Item {
     property alias txtWebsocketValid: txtWebsocketValid
     property alias infoOverlayRegion: infoOverlayRegion
     property alias infoOverlay: infoOverlay
+    property alias infoBtn:infoBtn
 
     property bool detectedWakeWord: false
 
@@ -424,7 +425,24 @@ Item {
                 anchors.right: parent.right
                 anchors.rightMargin: 24//16
                 anchors.leftMargin: 24//16
-                spacing: 40//50
+                spacing: 18//40//50
+                InfoBtn{
+                    id: infoBtn
+                    text: "Info"//""
+                    Layout.alignment: Qt.AlignVCenter
+                    // height: 58
+                    // implicitWidth: 100
+                    //width: implicitWidth//implicitWidth: 72//implicitWidth
+                    // Icon{
+                    //     name: "info-circle"
+                    //     height: 42
+                    //     width: 42
+                    //     color: ThemeConstants.colorInfo
+                    //     anchors.centerIn: parent
+                    // }
+
+
+                }
                 ActionBtn {
                     id: decreaseNominalFreqBtn
                     Layout.alignment: Qt.AlignVCenter
@@ -910,8 +928,8 @@ Item {
         id: infoOverlayRegion
         //visible: false
         anchors.centerIn: parent
-        implicitWidth:500
-        implicitHeight: 440
+        implicitWidth: infoOverlay.width
+        implicitHeight: infoOverlay.height
         modal: true
         focus: true
         padding: 0
@@ -923,6 +941,7 @@ Item {
             }
         }
         background: Item {}
+        onClosed: infoBtn.checked = false
 
     }
 

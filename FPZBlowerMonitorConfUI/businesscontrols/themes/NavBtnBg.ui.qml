@@ -5,7 +5,7 @@ Item {
     id: root
     property bool down: false
     implicitWidth: 144
-    implicitHeight: 80
+    height: 80
     Rectangle {
         anchors.fill: parent
         anchors.leftMargin: 5

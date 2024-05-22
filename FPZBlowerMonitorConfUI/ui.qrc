@@ -121,6 +121,8 @@
         <file>InfoOverlayTpl.qml</file>
         <file>businesscontrols/DataConstants.qml</file>
         <file>businesscontrols/qmldir</file>
+        <file>businesscontrols/CategoryBtn.qml</file>
+        <file>businesscontrols/InfoBtn.qml</file>
     </qresource>
     <qresource prefix="/qt-project.org">
         <file>fonts/CourierPrime-Bold.ttf</file>

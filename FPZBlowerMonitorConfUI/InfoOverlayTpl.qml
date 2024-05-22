@@ -8,7 +8,7 @@ import "businesscontrols/themes"
 
 Rectangle {
     id: root
-    width: 500
+    width: 700
     height: 440
     radius: 16
     color: ThemeConstants.colorMsgFg//colorReaderBg//"#A6ACAF"
@@ -96,14 +96,20 @@ Rectangle {
                     id: colBtn
                     spacing: 12//16
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenterOffset: 8
+                    //anchors.horizontalCenterOffset: 8
                     anchors.horizontalCenter: parent.horizontalCenter
+                    height: btnArea.height
                     //width: childrenRect.width
                     // anchors.left: parent.left
                     // anchors.right: parent.right
                     // anchors.rightMargin: 24//16
                     // anchors.leftMargin: 24//16
-                    ActionBtn {
+                    Item{
+                        Layout.fillHeight: true
+                        width:1
+                    }
+
+                    CategoryBtn {
                         id: showStartInfoBtn
                         Layout.alignment: Qt.AlignHCenter
                         text: "Start"
@@ -113,7 +119,7 @@ Rectangle {
                         down: root.infoIndex == 0
 
                     }
-                    ActionBtn {
+                    CategoryBtn {
                         id: showStopInfoBtn
                         text: "Stop"
                         Layout.alignment: Qt.AlignHCenter
@@ -124,7 +130,7 @@ Rectangle {
 
                     }
 
-                    ActionBtn {
+                    CategoryBtn {
                         id: showIncreaseInfoBtn
                         text: "Increase"
                         Layout.alignment: Qt.AlignHCenter
@@ -133,7 +139,7 @@ Rectangle {
                         onClicked: root.infoIndex = 2
                         down: root.infoIndex == 2
                     }
-                    ActionBtn {
+                    CategoryBtn {
                         id: showDecreasetInfoBtn
                         Layout.alignment: Qt.AlignHCenter
                         text: "Decrease"
@@ -143,7 +149,7 @@ Rectangle {
                         down: root.infoIndex == 3
 
                     }
-                    ActionBtn {
+                    CategoryBtn {
                         id: showSetInfoBtn
                         Layout.alignment: Qt.AlignHCenter
                         text: "Set"
@@ -151,6 +157,10 @@ Rectangle {
                         Layout.preferredHeight:56
                         onClicked: root.infoIndex = 4
                         down: root.infoIndex == 4
+                    }
+                    Item{
+                        Layout.fillHeight: true
+                        width:1
                     }
 
                 }
@@ -196,7 +206,7 @@ Rectangle {
                         id: txtArea
                         font.family: Constants.fontMainS.family
                         font.weight: Constants.fontMainS.weight
-                        font.pixelSize: Constants.fontMainS.pixelSize
+                        font.pixelSize: Constants.fontMainM.pixelSize
                         //color: ThemeConstants.colorReaderFg
                         //anchors.fill: parent
                         //horizontalAlignment: Text.AlignHCenter

@@ -6,9 +6,10 @@ import "themes"
 TabButton {
     id: root
     text: qsTr("Label")
-
+    height: navBtnBg.height
     background: NavBtnBg {
         id: navBtnBg
+        implicitHeight: root.height
         anchors.fill: root
         down: root.checked
     }
