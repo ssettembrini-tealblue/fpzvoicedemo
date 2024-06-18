@@ -9,13 +9,13 @@ Item {
     implicitWidth: 144
     implicitHeight: 56
     anchors.verticalCenter: parent.verticalCenter
-    anchors.verticalCenterOffset: down ? 2 : 0//4 : 0
+    anchors.verticalCenterOffset: down ? 2 : 0 //4 : 0
     opacity: root.enabled ? 1 : 0.8
     DropShadow {
         anchors.fill: outerRect
         source: outerRect
         horizontalOffset: 0
-        verticalOffset: root.enabled ? (root.down ? 2 : 6) : 2//4 : 12
+        verticalOffset: root.enabled ? (root.down ? 2 : 6) : 2 //4 : 12
         radius: verticalOffset
         color: "#66000000"
     }
@@ -32,7 +32,7 @@ Item {
         // width: parent.width
         // height: parent.height
         anchors.fill: parent
-        anchors.rightMargin: 16
+        //anchors.rightMargin: 16
         radius: 24
         gradient: Gradient {
             GradientStop {
@@ -49,16 +49,18 @@ Item {
         id: innerRect
         anchors.fill: parent
         anchors.margins: 4
-        anchors.rightMargin: 20
+        //anchors.rightMargin: 20
         radius: 24
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: root.enabled ? Qt.lighter(ThemeConstants.colorPowerBtnBg, 1.15) : "#EBEBE4"
+                color: root.enabled ? Qt.lighter(
+                                          ThemeConstants.colorPowerBtnBg,
+                                          1.15) : "#EBEBE4"
             }
             GradientStop {
                 position: 1
-                color: root.enabled ?ThemeConstants.colorPowerBtnBg : "#EBEBE4"
+                color: root.enabled ? ThemeConstants.colorPowerBtnBg : "#EBEBE4"
             }
         }
     }

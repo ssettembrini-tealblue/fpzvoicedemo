@@ -23,6 +23,7 @@ ReadCurrentInverterParamsTpl {
     increaseNominalFreqBtn.onClicked: clientActions.increaseNominalFrequency(1)
     decreaseNominalFreqBtn.onClicked: clientActions.decreaseNominalFrequency(1)
     quitAppBtn.onClicked: clientActions.quitApp()
+    toggleDO2Btn.onClicked: inveorStore.digOut2 ? clientActions.stopDO2() : clientActions.startDO2()
     connectionBtn.onCheckedChanged: connectionBtn.checked ? clientActions.connectDevice() : clientActions.disconnectDevice()
     connectionBtn.text: connectionBtn.checked ? "DISC." : "CONN."
     connectionBtn.display: AbstractButton.TextBesideIcon
@@ -49,6 +50,19 @@ ReadCurrentInverterParamsTpl {
     visibleBox: voiceStore.receivedMsg
     checkLanguageBtn.onClicked: clientActions.checkLanguage()
 
+
+   // pidDebug.text: inveorStore.pidActualValue
+    startDO2Btn.onClicked: {
+        //pidDebug.text= "PID clicked"
+        //clientActions.writePidActualValue(0)
+        clientActions.startDO2()
+    }
+    stopDO2Btn.onClicked: {
+        //pidDebug.text= "PID clicked"
+        //clientActions.writePidActualValue(3)
+        clientActions.stopDO2()
+    }
+
     //Testing on cmd injection
     inject.onClicked:{
         listenedCommand= "changed"
@@ -63,7 +77,15 @@ ReadCurrentInverterParamsTpl {
     }
 
 
-
+    Connections{
+        target: inveorStore
+        function onPidActualValueChanged(value){
+            //pidDebug.text= "PID ACTUAL VALUE CHANGED TO " + value
+        }
+        // function onPidNominalValueChanged(value){
+        //     pidDebug.text= "PID NOMINAL VALUE CHANGED TO" + value
+        // }
+    }
 
 }
 

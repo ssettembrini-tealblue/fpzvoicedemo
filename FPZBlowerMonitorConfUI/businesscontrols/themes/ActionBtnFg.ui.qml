@@ -15,7 +15,7 @@ Item {
     Row {
         id: row
         anchors.verticalCenterOffset: down ? 4 : 0
-        anchors.horizontalCenterOffset: -8
+        //anchors.horizontalCenterOffset: -8
         spacing: 16
         anchors.centerIn: parent
         Image {
@@ -26,7 +26,7 @@ Item {
             height: control.icon.height
         }
         ColorOverlay {
-            visible: control.display===AbstractButton.TextBesideIcon ? true : false
+            visible: control.display === AbstractButton.TextBesideIcon ? true : false
             source: image
             anchors.verticalCenter: row.verticalCenter
             width: image.width
@@ -39,7 +39,6 @@ Item {
             font.family: Constants.fontMain.family
             font.weight: Constants.fontMain.weight
             font.pixelSize: Constants.fontMain.pixelSize
-
         }
     }
 }

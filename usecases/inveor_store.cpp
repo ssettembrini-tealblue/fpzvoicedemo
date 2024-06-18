@@ -14,6 +14,14 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
                                       DataBits::Data8,
                                       StopBits::OneStop);
 
+
+    //Handling Digital Output 1 with 13 -> Digital Input 1
+    //m_inveor_inverter.writeDO1function(13);
+    m_inveor_inverter.writePidNominalValueMin(0);
+    m_inveor_inverter.writePidNominalValueMax(3);
+
+
+
     connect(m_clientActions, &ClientActions::connectDevice,this,[this](){
         m_inveor_inverter.connect();
         emit connStatusChanged();
@@ -79,6 +87,17 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
         }
 
     });
+    connect(m_clientActions, &ClientActions::startDO2,this,[this](){
+        setDigOut2(1);
+        m_inveor_inverter.writeDO2(1);
+        emit commStatusChanged();
+    });
+    connect(m_clientActions, &ClientActions::stopDO2,this,[this](){
+        setDigOut2(0);
+        m_inveor_inverter.writeDO2(0);
+        emit commStatusChanged();
+    });
+
     connect(m_clientActions, &ClientActions::writeMaxFrequency,this,[this](uint value){
         m_inveor_inverter.writeMaxFrequency(value);
         emit commStatusChanged();
@@ -101,6 +120,7 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::writePidActualValue,this,[this](uint value){
         m_inveor_inverter.writePidActualValue(value);
+        emit pidActualValueChanged(value);
         emit commStatusChanged();
     });
     connect(m_clientActions, &ClientActions::writePidNominalValue,this,[this](uint value){
@@ -117,6 +137,30 @@ InveorStore::InveorStore(ClientActions* clientActions,QObject *parent)
     });
     connect(m_clientActions, &ClientActions::writeAnalogicInput1Max,this,[this](uint value){
         m_inveor_inverter.writeAnalogicInput1Max(value);
+        emit commStatusChanged();
+    });
+    connect(m_clientActions, &ClientActions::writeDO1function,this,[this](uint value){
+        m_inveor_inverter.writeDO1function(value);
+        emit commStatusChanged();
+    });
+    connect(m_clientActions, &ClientActions::writeDO1on,this,[this](uint value){
+        m_inveor_inverter.writeDO1on(value);
+        emit commStatusChanged();
+    });
+    connect(m_clientActions, &ClientActions::writeDO1off,this,[this](uint value){
+        m_inveor_inverter.writeDO1off(value);
+        emit commStatusChanged();
+    });
+    connect(m_clientActions, &ClientActions::writeDO2function,this,[this](uint value){
+        m_inveor_inverter.writeDO2function(value);
+        emit commStatusChanged();
+    });
+    connect(m_clientActions, &ClientActions::writeDO2on,this,[this](uint value){
+        m_inveor_inverter.writeDO2on(value);
+        emit commStatusChanged();
+    });
+    connect(m_clientActions, &ClientActions::writeDO2off,this,[this](uint value){
+        m_inveor_inverter.writeDO2off(value);
         emit commStatusChanged();
     });
 }
@@ -225,6 +269,15 @@ void InveorStore::setNominalFrequency(uint nominalFrequency)
     emit nominalFrequencyChanged(m_nomFreq);
 }
 
+void InveorStore::setDigOut2(bool digout2)
+{
+    if (m_digOut2 == digout2)
+        return;
+
+    m_digOut2 = digout2;
+    //emit digOut2Changed(m_digOut2);
+}
+
 void InveorStore::readValues(){
     QTimer::singleShot(1, this, [this](){
         if(m_inveor_inverter.readActualFrequency()){
@@ -282,4 +335,9 @@ void InveorStore::readValues(){
     }
     emit connStatusChanged();
     emit commStatusChanged();
+}
+
+bool InveorStore::digOut2() const
+{
+    return m_digOut2;
 }

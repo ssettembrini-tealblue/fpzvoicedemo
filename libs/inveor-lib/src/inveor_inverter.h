@@ -127,6 +127,7 @@ public:
     uint analogicInput2();
     uint pidTargetValue();
 
+    bool readOutputs();
     bool readMaxFrequency();
     bool readMinFrequency();
     bool readOperatingMode();
@@ -200,7 +201,14 @@ public:
     bool writeAnalogicInput2UnitMax(double analogicInput2UnitMax);
     bool writeModbusDeviceIndex(double deviceIndex);
     bool writeModbusBaudRate(double baudRate);
+    bool writeDO1function(int function);
+    bool writeDO1on(int onValue);
+    bool writeDO1off(int offValue);
+    bool writeDO2function(int function);
+    bool writeDO2on(int onValue);
+    bool writeDO2off(int offValue);
 
+    bool writeDO2(bool value);
     bool writeNominalFrequency(uint value);
     bool writeControlWord(uint newControlWord);
 
@@ -267,6 +275,8 @@ private:
     void setAnalogicInput2UnitMax(int analogicInput2UnitMax);
     void setModbusDeviceIndex(int deviceIndex);
     void setModbusBaudRate(int baudRate);
+
+
 
     bool cw0();
     void setCw0(bool cw0);
@@ -335,6 +345,18 @@ private:
     bool sw15();
     void setSw15(bool sw15);
 
+    bool digOut1();
+    void setDigOut1(bool digout1);
+    bool digOut2();
+    void setDigOut2(bool digout2);
+    bool relay1();
+    void setRelay1(bool relay1);
+    bool relay2();
+    void setRelay2(bool relay2);
+    bool virtOut1();
+    void setVirtOut1(bool virtout1);
+
+
     QString m_commStatus = "";
     enum status m_connStatus=status::Disconnected;
 
@@ -350,6 +372,12 @@ private:
     QString m_tcpIpAddress;
     int m_numRetries{20};
     int m_timeout{20};
+
+    bool m_digOut1{0};
+    bool m_digOut2{0};
+    bool m_relay1{0};
+    bool m_relay2{0};
+    bool m_virtOut1{0};
 
     uint m_maxFrequency{0};
     uint m_minFrequency{0};
@@ -390,7 +418,7 @@ private:
     uint m_innerTemperature{0};
     uint m_analogicInput1{0};
     uint m_analogicInput2{0};
-    uint m_PidActualValue{0};
+    uint m_pidActualValue{0};
     uint m_PidTargetValue{0};
 
     bool m_cw0{0};

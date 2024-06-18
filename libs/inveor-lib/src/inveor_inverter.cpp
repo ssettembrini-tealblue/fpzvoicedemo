@@ -279,7 +279,59 @@ void InveorInverter::setTimeout(int timeout)
     m_modbusDevice->setTimeout(m_timeout);
 
 }
+bool InveorInverter::writeDO2(bool value){
+    qDebug() << Q_FUNC_INFO;
 
+    QBitArray ba(16);
+    ba.setBit(0, false);
+
+    if(value==0){
+        ba.setBit(1, false);
+    }
+    else{
+        ba.setBit(1, true);
+    }
+
+    ba.setBit(2, false);
+    ba.setBit(3, false);
+    ba.setBit(4, false);
+    // ba.setBit(6, true);
+    // ba.setBit(7,false);
+    // ba.setBit(10, true);
+    quint16 v = 0;
+    for (int i=0; i<16; i++){
+        v |= ba.at(i)<<i;
+    }
+    writeRegisterModel()->m_holdingRegisters.insert(0,v);
+
+    if (!m_modbusDevice)
+        return 0;
+    setStatus("Writing DO");
+
+    QModbusDataUnit writeUnit = writeRequest(4,1,1049);
+
+    for (int i = 0, total = int(writeUnit.valueCount()); i < total; ++i) {
+        writeUnit.setValue(i, writeRegisterModel()->m_holdingRegisters[i]);
+    }
+
+    if (auto *reply = m_modbusDevice->sendWriteRequest(writeUnit, deviceId())) {
+        if (!reply->isFinished()) {
+            QObject::connect(reply, &QModbusReply::finished, [this, reply]() {
+                if (reply->error() == QModbusDevice::ProtocolError) {
+                    sendError(modbusError::ProtocolWrite,reply) ;                     return 0;
+                } else if (reply->error() != QModbusDevice::NoError) {
+                    sendError(modbusError::Write,reply) ;                     return 0;
+                }
+                reply->deleteLater();
+                return 1;
+            });
+        } else {
+            reply->deleteLater();
+        }
+    } else {
+        sendError(modbusError::GenericWrite,reply) ;       return 0;
+    }
+}
 bool InveorInverter::writeNominalFrequency(uint value)
 {
     qDebug() << Q_FUNC_INFO;
@@ -1108,7 +1160,10 @@ bool InveorInverter::writePidD(double pidD)
 
 bool InveorInverter::writePidActualValue(double pidActualValue)
 {
-    writeRegisterModel()->m_holdingRegisters.insert(0,pidActualValue);
+    double pidact= (pidActualValue/3)*pow(2,15);
+    uint m= static_cast<uint>(pidact);
+
+    writeRegisterModel()->m_holdingRegisters.insert(0,m);
 
     if (!m_modbusDevice)
         return 0;
@@ -3182,6 +3237,47 @@ uint InveorInverter::analogicInput2()
     return m_analogicInput2;
 }
 
+bool InveorInverter::readOutputs()
+{
+
+        if (!m_modbusDevice)
+            return 0;
+        setStatus("Reading");
+        if (auto *reply = m_modbusDevice->sendReadRequest(readRequest(4,1,1040),deviceId())) {
+
+            if (!reply->isFinished()){
+
+                QObject::connect(reply, &QModbusReply::finished, [reply, this](){
+                    if (!reply)
+                        return 0;
+                    if (reply->error() == QModbusDevice::NoError) {
+                        const QModbusDataUnit unit = reply->result();
+                        for (int i = 0, total = int(unit.valueCount()); i < total; ++i) {
+                           // setStatusWord(unit.value(i));
+
+                        }
+                        return 1;
+                    } else if (reply->error() == QModbusDevice::ProtocolError) {
+                        sendError(modbusError::ProtocolRead,reply);
+                        return 0;
+                    } else {
+                        sendError(modbusError::Read,reply);
+                        return 0;
+                    }
+
+                    reply->deleteLater();
+                });
+
+            }else{
+                delete reply;
+            }
+        } else {
+            sendError(modbusError::GenericRead,reply);
+            return 0;
+        }
+
+}
+
 void InveorInverter::setAnalogicInput2(uint newReadAnalogicInput2)
 {
     if (m_analogicInput2 == newReadAnalogicInput2)
@@ -3191,13 +3287,13 @@ void InveorInverter::setAnalogicInput2(uint newReadAnalogicInput2)
 
 uint InveorInverter::pidActualValue()
 {
-    return m_PidActualValue;
+    return m_pidActualValue;
 }
 
 void InveorInverter::setPidActualValue(uint newreadPidActualValue)
 {
 
-    m_PidActualValue=newreadPidActualValue;
+    m_pidActualValue=newreadPidActualValue;
 }
 
 void InveorInverter::setPidTargetValue(uint newreadPidTargetValue)
@@ -3362,6 +3458,220 @@ void InveorInverter::setModbusDeviceIndex(int deviceIndex)
 void InveorInverter::setModbusBaudRate(int baudRate)
 {
     m_modbusBaudRate=baudRate;
+}
+
+bool InveorInverter::writeDO1function(int function)
+{
+    double d01F= (function/60)*pow(2,15);
+    uint m= static_cast<uint>(d01F);
+
+    writeRegisterModel()->m_holdingRegisters.insert(0,m);
+    if (!m_modbusDevice)
+        return 0;
+    setStatus("Writing Digital Output 1 Function");
+
+    QModbusDataUnit writeUnit = writeRequest(4,1,3055);
+
+    for (int i = 0, total = int(writeUnit.valueCount()); i < total; ++i) {
+        writeUnit.setValue(i, writeRegisterModel()->m_holdingRegisters[i]);
+    }
+
+    if (auto *reply = m_modbusDevice->sendWriteRequest(writeUnit, deviceId())) {
+        if (!reply->isFinished()) {
+            QObject::connect(reply, &QModbusReply::finished, [this, reply]() {
+                if (reply->error() == QModbusDevice::ProtocolError) {
+                    sendError(modbusError::ProtocolWrite,reply) ;                     return 0;
+                } else if (reply->error() != QModbusDevice::NoError) {
+                    sendError(modbusError::Write,reply) ;                     return 0;
+                }
+                reply->deleteLater();
+                return 1;
+            });
+        } else {
+            reply->deleteLater();
+            return 0;
+        }
+    } else {
+        sendError(modbusError::GenericWrite,reply) ;
+        return 0;
+    }
+}
+
+bool InveorInverter::writeDO1on(int onValue)
+{
+    double d01On= (onValue/60)*pow(2,15);
+    uint m= static_cast<uint>(d01On);
+
+    writeRegisterModel()->m_holdingRegisters.insert(0,m);
+    if (!m_modbusDevice)
+        return 0;
+    setStatus("Writing Digital Output 1 On");
+
+    QModbusDataUnit writeUnit = writeRequest(4,1,3056);
+
+    for (int i = 0, total = int(writeUnit.valueCount()); i < total; ++i) {
+        writeUnit.setValue(i, writeRegisterModel()->m_holdingRegisters[i]);
+    }
+
+    if (auto *reply = m_modbusDevice->sendWriteRequest(writeUnit, deviceId())) {
+        if (!reply->isFinished()) {
+            QObject::connect(reply, &QModbusReply::finished, [this, reply]() {
+                if (reply->error() == QModbusDevice::ProtocolError) {
+                    sendError(modbusError::ProtocolWrite,reply) ;                     return 0;
+                } else if (reply->error() != QModbusDevice::NoError) {
+                    sendError(modbusError::Write,reply) ;                     return 0;
+                }
+                reply->deleteLater();
+                return 1;
+            });
+        } else {
+            reply->deleteLater();
+        }
+    } else {
+        sendError(modbusError::GenericWrite,reply) ;       return 0;
+    }
+}
+
+bool InveorInverter::writeDO1off(int offValue)
+{
+    double d01Off= (offValue/60)*pow(2,15);
+    uint m= static_cast<uint>(d01Off);
+
+    writeRegisterModel()->m_holdingRegisters.insert(0,m);
+    if (!m_modbusDevice)
+        return 0;
+    setStatus("Writing Digital Output 1 Off");
+
+    QModbusDataUnit writeUnit = writeRequest(4,1,3057);
+
+    for (int i = 0, total = int(writeUnit.valueCount()); i < total; ++i) {
+        writeUnit.setValue(i, writeRegisterModel()->m_holdingRegisters[i]);
+    }
+
+    if (auto *reply = m_modbusDevice->sendWriteRequest(writeUnit, deviceId())) {
+        if (!reply->isFinished()) {
+            QObject::connect(reply, &QModbusReply::finished, [this, reply]() {
+                if (reply->error() == QModbusDevice::ProtocolError) {
+                    sendError(modbusError::ProtocolWrite,reply) ;                     return 0;
+                } else if (reply->error() != QModbusDevice::NoError) {
+                    sendError(modbusError::Write,reply) ;                     return 0;
+                }
+                reply->deleteLater();
+                return 1;
+            });
+        } else {
+            reply->deleteLater();
+        }
+    } else {
+        sendError(modbusError::GenericWrite,reply) ;       return 0;
+    }
+}
+
+bool InveorInverter::writeDO2function(int function)
+{
+    double d02F= (function/60)*pow(2,15);
+    uint m= static_cast<uint>(d02F);
+
+    writeRegisterModel()->m_holdingRegisters.insert(0,m);
+    if (!m_modbusDevice)
+        return 0;
+    setStatus("Writing Digital Output 2 Function");
+
+    QModbusDataUnit writeUnit = writeRequest(4,1,3058);
+
+    for (int i = 0, total = int(writeUnit.valueCount()); i < total; ++i) {
+        writeUnit.setValue(i, writeRegisterModel()->m_holdingRegisters[i]);
+    }
+
+    if (auto *reply = m_modbusDevice->sendWriteRequest(writeUnit, deviceId())) {
+        if (!reply->isFinished()) {
+            QObject::connect(reply, &QModbusReply::finished, [this, reply]() {
+                if (reply->error() == QModbusDevice::ProtocolError) {
+                    sendError(modbusError::ProtocolWrite,reply) ;                     return 0;
+                } else if (reply->error() != QModbusDevice::NoError) {
+                    sendError(modbusError::Write,reply) ;                     return 0;
+                }
+                reply->deleteLater();
+                return 1;
+            });
+        } else {
+            reply->deleteLater();
+            return 0;
+        }
+    } else {
+        sendError(modbusError::GenericWrite,reply) ;
+        return 0;
+    }
+}
+
+bool InveorInverter::writeDO2on(int onValue)
+{
+    double d02On= (onValue/60)*pow(2,15);
+    uint m= static_cast<uint>(d02On);
+
+    writeRegisterModel()->m_holdingRegisters.insert(0,m);
+    if (!m_modbusDevice)
+        return 0;
+    setStatus("Writing Digital Output 2 On");
+
+    QModbusDataUnit writeUnit = writeRequest(4,1,3059);
+
+    for (int i = 0, total = int(writeUnit.valueCount()); i < total; ++i) {
+        writeUnit.setValue(i, writeRegisterModel()->m_holdingRegisters[i]);
+    }
+
+    if (auto *reply = m_modbusDevice->sendWriteRequest(writeUnit, deviceId())) {
+        if (!reply->isFinished()) {
+            QObject::connect(reply, &QModbusReply::finished, [this, reply]() {
+                if (reply->error() == QModbusDevice::ProtocolError) {
+                    sendError(modbusError::ProtocolWrite,reply) ;                     return 0;
+                } else if (reply->error() != QModbusDevice::NoError) {
+                    sendError(modbusError::Write,reply) ;                     return 0;
+                }
+                reply->deleteLater();
+                return 1;
+            });
+        } else {
+            reply->deleteLater();
+        }
+    } else {
+        sendError(modbusError::GenericWrite,reply) ;       return 0;
+    }
+}
+
+bool InveorInverter::writeDO2off(int offValue)
+{
+    double d02Off= (offValue/60)*pow(2,15);
+    uint m= static_cast<uint>(d02Off);
+
+    writeRegisterModel()->m_holdingRegisters.insert(0,m);
+    if (!m_modbusDevice)
+        return 0;
+    setStatus("Writing Digital Output 2 Off");
+
+    QModbusDataUnit writeUnit = writeRequest(4,1,3060);
+
+    for (int i = 0, total = int(writeUnit.valueCount()); i < total; ++i) {
+        writeUnit.setValue(i, writeRegisterModel()->m_holdingRegisters[i]);
+    }
+
+    if (auto *reply = m_modbusDevice->sendWriteRequest(writeUnit, deviceId())) {
+        if (!reply->isFinished()) {
+            QObject::connect(reply, &QModbusReply::finished, [this, reply]() {
+                if (reply->error() == QModbusDevice::ProtocolError) {
+                    sendError(modbusError::ProtocolWrite,reply) ;                     return 0;
+                } else if (reply->error() != QModbusDevice::NoError) {
+                    sendError(modbusError::Write,reply) ;                     return 0;
+                }
+                reply->deleteLater();
+                return 1;
+            });
+        } else {
+            reply->deleteLater();
+        }
+    } else {
+        sendError(modbusError::GenericWrite,reply) ;       return 0;
+    }
 }
 
 bool InveorInverter::cw0()
@@ -3650,6 +3960,56 @@ bool InveorInverter::sw15()
 void InveorInverter::setSw15(bool sw15)
 {
     m_sw15=sw15;
+}
+
+bool InveorInverter::digOut1()
+{
+    return m_digOut1;
+}
+
+void InveorInverter::setDigOut1(bool digout1)
+{
+    m_digOut1=digout1;
+}
+
+bool InveorInverter::digOut2()
+{
+    return m_digOut2;
+}
+
+void InveorInverter::setDigOut2(bool digout2)
+{
+    m_digOut2=digout2;
+}
+
+bool InveorInverter::relay1()
+{
+    return m_relay1;
+}
+
+void InveorInverter::setRelay1(bool relay1)
+{
+    m_relay1=relay1;
+}
+
+bool InveorInverter::relay2()
+{
+    return m_relay2;
+}
+
+void InveorInverter::setRelay2(bool relay2)
+{
+    m_relay2=relay2;
+}
+
+bool InveorInverter::virtOut1()
+{
+    return m_virtOut1;
+}
+
+void InveorInverter::setVirtOut1(bool virtout1)
+{
+    m_virtOut1=virtout1;
 }
 
 BaudRate InveorInverter::baudRate()

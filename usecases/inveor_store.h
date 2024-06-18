@@ -23,6 +23,8 @@ class InveorStore : public QObject
     Q_PROPERTY(uint minFrequency READ minFrequency NOTIFY minFrequencyChanged)
     Q_PROPERTY(uint maxFrequency READ maxFrequency NOTIFY maxFrequencyChanged)
     Q_PROPERTY(uint nomFreq READ nomFreq NOTIFY nomFreqChanged)
+    Q_PROPERTY(uint pidActualValue READ pidActualValue NOTIFY pidActualValueChanged)
+    Q_PROPERTY(bool digOut2 READ digOut2 NOTIFY digOut2Changed)
 
 public:
     explicit InveorStore(ClientActions* clientActions,QObject *parent = nullptr);
@@ -31,6 +33,7 @@ public:
     void readValues();
 
     void setNominalFrequency(uint nominalFrequency);
+    void setDigOut2(bool digout2);
 
     QString connStatus();
     QString msgStatus();
@@ -51,6 +54,8 @@ public:
     uint analogicInput1Min();
     uint analogicInput1Max();    
     uint nomFreq() const;
+
+    bool digOut2() const;
 
 signals:
     void connStatusChanged();
@@ -74,6 +79,8 @@ signals:
     void analogicInput1MaxChanged(uint newAnalogicInput1Max);
     void nomFreqChanged(uint nomFreq);
 
+    void digOut2Changed();
+
 private:
     ClientActions* m_clientActions;
     InveorInverter m_inveor_inverter;
@@ -95,6 +102,7 @@ private:
     uint m_analogicInput1Min {0};
     uint m_analogicInput1Max {0};
     uint m_nomFreq {0};
+    bool m_digOut2 {0};
 };
 
 #endif // INVEOR_STORE_H

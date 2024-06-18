@@ -7,11 +7,12 @@ import QtGraphicalEffects 1.12
 import "./businesscontrols"
 import "./businesscontrols/themes"
 
-
 Item {
     id: root
     width: Constants.width
     height: Constants.contentHeight
+    property alias startDO2Btn: startDO2Btn
+    property alias stopDO2Btn: stopDO2Btn
     property alias quitAppBtn: quitAppBtn
     property alias connectionBtn: connectionBtn
     property alias statusBar: statusBar
@@ -34,10 +35,10 @@ Item {
     property alias txtWebsocketValid: txtWebsocketValid
     property alias infoOverlayRegion: infoOverlayRegion
     property alias infoOverlay: infoOverlay
-    property alias infoBtn:infoBtn
-
+    property alias infoBtn: infoBtn
+    property alias toggleDO2Btn: toggleDO2Btn
+    //property alias pidDebug: pidDebug
     property bool detectedWakeWord: false
-
 
     property bool activeCommand
     property string listenedCommand
@@ -51,7 +52,6 @@ Item {
         id: manualDetectionTimer
         interval: 3000
         running: false
-
     }
 
     TemplateBg {
@@ -78,27 +78,27 @@ Item {
         //     Layout.preferredHeight: 96
         //     Layout.fillWidth: true
         //     Layout.alignment: Qt.AlignHCenter //| Qt.AlignVCenter
-        Rectangle{
+        Rectangle {
             id: bgEffect
-            color:"transparent"
+            color: "transparent"
             Layout.fillHeight: true
             Layout.fillWidth: true
             ColumnLayout {
                 id: columnLayoutContent
                 anchors.fill: parent
 
-                Item{
+                Item {
                     Layout.fillHeight: true
-                    width:1
+                    width: 1
                 }
 
-                Row{
+                Row {
                     spacing: 10
                     //anchors.horizontalCenter: parent.horizontalCenter
                     //anchors.top: parent.top
                     //anchors.topMargin: 80
                     Layout.alignment: Qt.AlignHCenter
-                    Rectangle{
+                    Rectangle {
                         id: detectionBox
                         anchors.verticalCenter: parent.verticalCenter
                         width: 180
@@ -106,9 +106,10 @@ Item {
                         radius: 12
 
                         color: enabled ? (root.detectedWakeWord ? "#a0db8e" : "#ff6f69") : "#cccccc"
-                        opacity: enabled ? 1 :0.8
-                        Row{
+                        opacity: enabled ? 1 : 0.8
+                        Row {
                             anchors.centerIn: parent
+
                             // Rectangle{
                             //     height: 10
                             //     width: 10
@@ -116,35 +117,45 @@ Item {
                             //     color:root.detectedWakeWord ? "green" : "red"
                             //     anchors.verticalCenter: parent.verticalCenter
                             // }
-
-                            Text{
+                            Text {
                                 id: txtWakeWord
                                 text: root.detectedWakeWord ? "DETECTED" : "NOT DETECTED"
-                                color: "black"//root.detectedWakeWord ? "green" : "red"
+                                color: "black" //root.detectedWakeWord ? "green" : "red"
                                 anchors.verticalCenter: parent.verticalCenter
                                 //font.pixelSize: 24
                                 //lineHeight: 1.2
                                 opacity: 0.5
                                 font: Constants.fontMainS
                             }
-                            Text{
+                            Text {
                                 text: "-"
                                 visible: txtDebug.visible
                                 anchors.verticalCenter: parent.verticalCenter
                             }
-                            Text{
+                            Text {
                                 id: txtDebug
                                 visible: false
                                 text: root.debug
-                                color: "black"//root.detectedWakeWord ? "green" : "red"
+                                color: "black" //root.detectedWakeWord ? "green" : "red"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }
                     }
-                    // Item{
-                    //  width:30
-                    //  height:1
+                    // Item {
+                    //     width: 30
+                    //     height: 1
                     // }
+                    ActionBtn {
+                        visible: false
+                        id: startDO2Btn
+                        text: "Start DO2"
+                    }
+                    ActionBtn {
+                        visible: false
+                        id: stopDO2Btn
+                        text: "Stop DO2"
+                    }
+
                     // Button{
                     //     //id: manualListenBtn old
 
@@ -178,7 +189,6 @@ Item {
                     //         }
                     //     }
                     // }
-
                     ActionBtn {
                         id: checkLanguageBtn
                         visible: false
@@ -197,38 +207,37 @@ Item {
                         text: "Inject"
                         icon.source: "businesscontrols/icons/add_black_24dp.svg"
                     }
-                    Column{
+                    Column {
 
                         visible: false
                         anchors.verticalCenter: parent.verticalCenter
 
-                        Text{
+                        Text {
                             id: txtCounterMsg
                             text: "Counter: " + voiceStore.msgCounter
-                            color: "black"//root.detectedWakeWord ? "green" : "red"
-
+                            color: "black" //root.detectedWakeWord ? "green" : "red"
                         }
-                        Text{
+                        Text {
                             text: voiceStore.reachableMycroft ? "MYCROFT REACHABLE" : "MYCROFT UNREACHABLE"
                             id: txtReachableMycroft
                         }
-                        Text{
+                        Text {
                             id: txtRestarting
                             text: voiceStore.restarting ? "RESTARTING" : "NOT RESTARTING"
                             color: "black"
                         }
-                        Text{
+                        Text {
                             id: txtWebsocketValid
                             text: voiceStore.websocketValid ? "WS ACTIVE" : "WS DISCONN"
                             color: "black"
                         }
 
-                        Text{
+                        Text {
                             id: txtReachableSkills
                             text: voiceStore.reachableSkills ? "ACTIVE SKILL" : "INACTIVE SKILL"
-                            color: "black"//root.detectedWakeWord ? "green" : "red"
+                            color: "black" //root.detectedWakeWord ? "green" : "red"
                         }
-                        Text{
+                        Text {
 
                             text: root.debug
                             color: "black"
@@ -236,12 +245,11 @@ Item {
                     }
                 }
 
-
-                Item{
+                Item {
                     Layout.preferredHeight: 16
-                    width:1
+                    width: 1
                 }
-                Rectangle{
+                Rectangle {
                     color: "transparent"
                     Layout.alignment: Qt.AlignHCenter
                     Layout.preferredWidth: currentParametersGrid.implicitWidth
@@ -252,17 +260,16 @@ Item {
                         id: msgArea
                         visible: visibleBox
                         width: parent.width
-                        radius:10//16
+                        radius: 10 //16
                         height: parent.height
-                        color:  ThemeConstants.colorInfo
+                        color: ThemeConstants.colorInfo
 
-
-                        Column{
+                        Column {
                             anchors.centerIn: parent
                             Text {
                                 id: voiceMsgLabel
                                 //visible: !root.activeCommand
-                                color:"#F5F4F4"//"#5b5b5b"//ThemeConstants.colorMsgFg
+                                color: "#F5F4F4" //"#5b5b5b"//ThemeConstants.colorMsgFg
                                 text: root.activeCommand ? "Comando riconosciuto" : "Comando non riconosciuto"
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
@@ -276,8 +283,8 @@ Item {
                             Text {
                                 id: voiceMsgValue
                                 //visible: !root.activeCommand
-                                color:"#F5F4F4"//"#5b5b5b"//ThemeConstants.colorMsgFg
-                                text:  root.activeCommand ? root.commandName + (root.commandValue != 0 ? " - " + root.commandValue.toString() : "") : "\"" + root.listenedCommand + "\""
+                                color: "#F5F4F4" //"#5b5b5b"//ThemeConstants.colorMsgFg
+                                text: root.activeCommand ? root.commandName + (root.commandValue != 0 ? " - " + root.commandValue.toString() : "") : "\"" + root.listenedCommand + "\""
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
                                 //Layout.alignment: Qt.AlignHCenter
@@ -290,7 +297,7 @@ Item {
                         }
                         AlertMsg {
                             id: alertMsg
-                            visible:false
+                            visible: false
                             y: 56
                             width: 572
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -299,7 +306,7 @@ Item {
 
                         Row {
                             id: progressMsgArea
-                            visible:false
+                            visible: false
                             width: 240
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: 32
@@ -320,11 +327,11 @@ Item {
                     }
                 }
 
-                Item{
+                Item {
                     Layout.preferredHeight: 16
-                    width:1
+                    width: 1
                 }
-                Item{
+                Item {
                     id: monitoringPage
                     Layout.preferredHeight: 180
                     Layout.preferredWidth: 600
@@ -374,15 +381,13 @@ Item {
                             Layout.fillWidth: true
                             unitLabel.text: "A"
                         }
-
                     }
                 }
-                Item{
+                Item {
                     Layout.fillHeight: true
-                    width:1
+                    width: 1
                 }
             }
-
         }
 
         // InnerShadow{
@@ -392,7 +397,6 @@ Item {
         //     samples: 24
         //     color: "red"
         // }
-
         Item {
             id: actionArea
             Layout.preferredHeight: 96
@@ -423,12 +427,12 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.rightMargin: 24//16
-                anchors.leftMargin: 24//16
-                spacing: 18//40//50
-                InfoBtn{
+                anchors.rightMargin: 24 //16
+                anchors.leftMargin: 24 //16
+                //spacing: 18 //40//50
+                InfoBtn {
                     id: infoBtn
-                    text: "Info"//""
+                    text: "Info" //""
                     Layout.alignment: Qt.AlignVCenter
                     // height: 58
                     // implicitWidth: 100
@@ -440,8 +444,6 @@ Item {
                     //     color: ThemeConstants.colorInfo
                     //     anchors.centerIn: parent
                     // }
-
-
                 }
                 ActionBtn {
                     id: decreaseNominalFreqBtn
@@ -458,7 +460,7 @@ Item {
 
                 // Row{
                 //     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Button  {
+                Button {
                     id: manualListenBtn
                     //                    Connections{
                     //                        target: manualListenBtn
@@ -474,42 +476,51 @@ Item {
                     width: 180
                     leftPadding: 15
                     rightPadding: 15
-                    display: icon.source==="" ? AbstractButton.TextBesideIcon : AbstractButton.TextOnly
+                    display: icon.source
+                             === "" ? AbstractButton.TextBesideIcon : AbstractButton.TextOnly
                     //icon.source: "icons/power_settings_new-24px.svg"
                     background: ActionBtnBg {
                         down: manualListenBtn.pressed
-                        width: 160
+                        width: parent.width
                         //height:32
                     }
-                    contentItem: Row{
+                    contentItem: Row {
                         opacity: enabled ? 1 : 0.5
-                        spacing:8
+                        spacing: 8
                         anchors.centerIn: parent
                         anchors.verticalCenterOffset: manualListenBtn.pressed ? 2 : 0
-                        Text{
+                        Text {
 
                             text: "Manual Listen"
                             font.capitalization: Font.AllUppercase
                             font.family: Constants.fontMain.family
                             font.weight: Constants.fontMain.weight
-                            font.pixelSize:  13
+                            font.pixelSize: 13
                             anchors.verticalCenter: parent.verticalCenter
                         }
-                        Rectangle{
+                        Rectangle {
                             height: 10
                             width: 10
-                            radius: height/2
+                            radius: height / 2
                             color: enabled ? "red" : "grey"
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
-
                 }
                 ActionBtn {
                     id: connectionBtn
+                    visible: false
                     checkable: true
                     text: "Conn"
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Layout.alignment: Qt.AlignVCenter // Qt.AlignHCenter | Qt.AlignVCenter
+                    icon.source: "businesscontrols/icons/close_black_24dp.svg"
+                }
+                ActionBtn {
+                    id: toggleDO2Btn
+
+                    checkable: true
+                    text: "toggle do2"
+                    Layout.alignment: Qt.AlignVCenter //Qt.AlignHCenter | Qt.AlignVCenter
                     icon.source: "businesscontrols/icons/close_black_24dp.svg"
                 }
                 ActionBtn {
@@ -518,33 +529,31 @@ Item {
                     Layout.alignment: Qt.AlignVCenter
                     icon.source: "businesscontrols/icons/power_settings_new-24px.svg"
                 }
-                Button{
+                Button {
                     id: changeLanguageBtn
                     //anchors.right: parent.right
                     //anchors.rightMargin: 24
                     Layout.alignment: Qt.AlignVCenter
                     anchors.verticalCenterOffset: enabled ? -2 : 0
                     //anchors.verticalCenter: parent.verticalCenter
-                    width: 74//rowLanguage.childrenRect.width + 40//72
-                    Layout.preferredWidth:74
-                    background: ActionBtnBg{
-                        width: 74//sparent.width //72
+                    width: 74 //rowLanguage.childrenRect.width + 40//72
+                    Layout.preferredWidth: 74
+                    background: ActionBtnBg {
+                        width: 74 //sparent.width //72
                         // height: 52
                         down: changeLanguageBtn.pressed
                     }
-                    contentItem:
-                        // Item{
-                        // anchors.verticalCenter: parent.verticalCenter
-                        // anchors.horizontalCenter: parent.horizontalCenter
-
-                        Row{
+                    contentItem: // Item{
+                                 // anchors.verticalCenter: parent.verticalCenter
+                                 // anchors.horizontalCenter: parent.horizontalCenter
+                                 Row {
                         id: rowLanguage
 
                         spacing: 2
                         //x:8
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        Item{
+                        Item {
                             visible: false
                             height: 1
                             width: 4
@@ -555,27 +564,30 @@ Item {
                             //anchors.centerIn: parent
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.verticalCenterOffset: changeLanguageBtn.pressed ? 2 : 0
+                            anchors.horizontalCenter: parent.horizontalCenter
                             visible: true
-                            source: language=="IT" ? "./businesscontrols/icons/gb.svg" : "./businesscontrols/icons/it.svg"
+                            source: language == "IT" ? "./businesscontrols/icons/gb.svg" : "./businesscontrols/icons/it.svg"
                             height: 36
                             width: 42
-                            opacity: (!voiceStore.reachableSkills || !voiceStore.reachableMycroft || !voiceStore.reachableStt) ? 0.1 : 1
+                            opacity: (!voiceStore.reachableSkills
+                                      || !voiceStore.reachableMycroft
+                                      || !voiceStore.reachableStt) ? 0.1 : 1
 
                             sourceSize.height: height
                             sourceSize.width: width
                             fillMode: Image.PreserveAspectFit
                             layer.enabled: true
-                            layer.effect: OpacityMask{
+                            layer.effect: OpacityMask {
 
-                                maskSource: Item{
-                                    height:image.height
-                                    width:image.width
+                                maskSource: Item {
+                                    height: image.height
+                                    width: image.width
                                     Rectangle {
                                         id: imgMask
                                         anchors.centerIn: parent
 
                                         //color: "white"
-                                        opacity: 1//0.85
+                                        opacity: 1 //0.85
                                         height: 36
                                         width: 36
                                         radius: 18
@@ -584,9 +596,7 @@ Item {
                             }
                         }
 
-
-
-                        Item{
+                        Item {
                             visible: false
                             height: 1
                             width: 4
@@ -597,33 +607,31 @@ Item {
                             //visible: false
                             anchors.verticalCenter: parent.verticalCenter
                             //anchors.centerIn: parent
-                            text: language=="IT" ? "CAMBIA LINGUA" : "CHANGE LANGUAGE"
+                            text: language == "IT" ? "CAMBIA LINGUA" : "CHANGE LANGUAGE"
                             font.family: Constants.fontMainS.family
                             font.weight: Constants.fontMainS.weight
                             font.pixelSize: 20 //Constants.fontMainM.pixelSize
                             color: "black"
                         }
-
                     }
-                    Rectangle{
-                        visible: (!voiceStore.reachableSkills || !voiceStore.reachableMycroft || !voiceStore.reachableStt)
+                    Rectangle {
+                        visible: (!voiceStore.reachableSkills
+                                  || !voiceStore.reachableMycroft
+                                  || !voiceStore.reachableStt)
                         //anchors.centerIn: image
                         //anchors.horizontalCenter: parent.horizontalCenter
-                        x:11
-                        y:10
+                        x: 20 //11
+                        y: 10
                         color: "grey"
                         opacity: 0.4
                         height: 36
                         width: 36
                         radius: 18
                     }
-
                 }
-
             }
         }
     }
-
 
     states: [
         State {
@@ -642,7 +650,6 @@ Item {
             //                target: actualFreqReader
             //                state: "active"
             //            }
-
 
             //            PropertyChanges {
             //                target: motorVoltReader
@@ -691,7 +698,6 @@ Item {
                 target: msgArea
                 visible: visibleBox
             }
-
         },
         State {
             name: "sensorDataOld"
@@ -733,7 +739,6 @@ Item {
                 state: "warning"
             }
 
-
             PropertyChanges {
                 target: motorVoltReader
                 state: "warning"
@@ -747,8 +752,6 @@ Item {
                 target: msgArea
                 visible: visibleBox
             }
-
-
         },
         State {
             name: "restarting"
@@ -756,13 +759,11 @@ Item {
             PropertyChanges {
                 target: changeLanguageBtn
                 enabled: false
-
             }
             // PropertyChanges {
             //     target: actualFreqReader
             //     state: "disconnected"
             // }
-
 
             // PropertyChanges {
             //     target: motorVoltReader
@@ -792,7 +793,6 @@ Item {
             //     target: increaseNominalFreqBtn
             //     enabled: false
             // }
-
             PropertyChanges {
                 target: detectionBox
                 enabled: false
@@ -800,7 +800,7 @@ Item {
 
             PropertyChanges {
                 target: voiceMsgLabel
-                text: root.language=="IT" ? "Riavviando il sistema" : "Restarting system"
+                text: root.language == "IT" ? "Riavviando il sistema" : "Restarting system"
                 font: Constants.fontMain
             }
 
@@ -814,8 +814,6 @@ Item {
                 color: ThemeConstants.colorInfo
                 visible: true
             }
-
-
         },
         State {
             name: "inactive"
@@ -823,13 +821,11 @@ Item {
             PropertyChanges {
                 target: changeLanguageBtn
                 enabled: false
-
             }
             // PropertyChanges {
             //     target: actualFreqReader
             //     state: "disconnected"
             // }
-
 
             // PropertyChanges {
             //     target: motorVoltReader
@@ -852,7 +848,7 @@ Item {
 
             PropertyChanges {
                 target: voiceMsgLabel
-                text: root.language=="IT" ? "Sistema inattivo" : "Inactive system"
+                text: root.language == "IT" ? "Sistema inattivo" : "Inactive system"
                 font: Constants.fontMain
             }
 
@@ -873,13 +869,11 @@ Item {
             PropertyChanges {
                 target: changeLanguageBtn
                 enabled: false
-
             }
             // PropertyChanges {
             //     target: actualFreqReader
             //     state: "disconnected"
             // }
-
 
             // PropertyChanges {
             //     target: motorVoltReader
@@ -902,7 +896,7 @@ Item {
 
             PropertyChanges {
                 target: voiceMsgLabel
-                text: root.language=="IT" ? "Avvio skill" : "Activating skill"
+                text: root.language == "IT" ? "Avvio skill" : "Activating skill"
                 font: Constants.fontMain
             }
 
@@ -919,7 +913,7 @@ Item {
         }
     ]
 
-    Rectangle{
+    Rectangle {
         id: filler
         visible: false
     }
@@ -934,7 +928,7 @@ Item {
         focus: true
         padding: 0
         contentItem: Item {
-            InfoOverlayTpl{
+            InfoOverlayTpl {
                 id: infoOverlay
                 visible: true
                 anchors.fill: parent
@@ -942,9 +936,5 @@ Item {
         }
         background: Item {}
         onClosed: infoBtn.checked = false
-
     }
-
 }
-
-

@@ -24,6 +24,8 @@ signals:
     void disconnectDevice();
 
     void quitApp();
+    void startDO2();
+    void stopDO2();
     void increaseNominalFrequency(uint step);
     void decreaseNominalFrequency(uint step);
     void writeNominalFrequency(uint nominalFrequency);
@@ -39,6 +41,13 @@ signals:
     void writeAnalogicInput1Type(uint analogicInput1Type);
     void writeAnalogicInput1Min(uint analogicInput1Min);
     void writeAnalogicInput1Max(uint analogicInput1Max);
+    void writeDO1function(uint function);
+    void writeDO1on(uint onValue);
+    void writeDO1off(uint offValue);
+    void writeDO2function(uint function);
+    void writeDO2on(uint onValue);
+    void writeDO2off(uint offValue);
+
 };
 
 
