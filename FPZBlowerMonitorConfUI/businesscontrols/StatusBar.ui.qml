@@ -11,15 +11,16 @@ Item {
     readonly property alias btConnectionIndicator: btConnectionIndicator
     readonly property alias modbusConnectionIndicator: modbusConnectionIndicator
     readonly property alias voiceConnectionIndicator: voiceConnectionIndicator
-   // readonly property alias infoBtn: infoBtn
+    readonly property alias wakewordDetectedIndicator: wakewordDetectedIndicator
 
+    // readonly property alias infoBtn: infoBtn
     implicitWidth: 640
     implicitHeight: 64
     StatusBarBg {
         id: statusAreaBg
         anchors.fill: parent
     }
-    Row{
+    Row {
         anchors.left: parent.left
         anchors.leftMargin: 16
         anchors.verticalCenter: parent.verticalCenter
@@ -38,15 +39,21 @@ Item {
             //anchors.leftMargin: 16
             anchors.verticalCenter: parent.verticalCenter
         }
-        VoiceConnectionIndicator{
+        VoiceConnectionIndicator {
             id: voiceConnectionIndicator
-            visible:false
+            visible: false
             anchors.verticalCenter: parent.verticalCenter
         }
     }
-
+    WakewordDetectedIndicator {
+        id: wakewordDetectedIndicator
+        visible: false
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
     Text {
         id: connectedDeviceName
+        visible: false
         color: ThemeConstants.colorStatusFg
         text: qsTr("<connected device name>")
         anchors.verticalCenter: parent.verticalCenter
@@ -70,10 +77,6 @@ Item {
     //     anchors.right: parent.right
     //     anchors.rightMargin: 16
     // }
-
-
-
-
 }
 
 /*##^##

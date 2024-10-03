@@ -101,7 +101,7 @@ Window {
 //                state: "init"
 //            }
 
-             ReadInveorParamsView{
+             ReadInveorParamsVoiceView{
                 id: readCurrentParamsView
                 //anchors.fill: parent
                 visible: true

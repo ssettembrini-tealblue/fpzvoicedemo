@@ -2,7 +2,7 @@ QT += core gui qml quick quickcontrols2 svg scxml
 
 CONFIG += c++11
 
-include(../usecases/usecases.pri)
+include(./usecases/usecases.pri)
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -10,8 +10,8 @@ include(../usecases/usecases.pri)
 
 #include ($${PWD}/../easy-bluetooth/easy-bluetooth.pri)
 
-SOURCES +=         main.cpp 
-RESOURCES +=     ../FPZBlowerMonitorConfUI/ui.qrc     qml.qrc
+SOURCES += app/main.cpp
+RESOURCES += ./FPZBlowerMonitorConfUI/ui.qrc     app/qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 macx: QML_IMPORT_PATH += "FPZBlowerMonitorConfUI/imports"
@@ -27,7 +27,7 @@ else: unix:!android: target.path = /home/pi/$${TARGET}/bin
 android {
     ANDROID_ABIS = armeabi-v7a arm64-v8a
 
-    DISTFILES +=         android/AndroidManifest.xml
+    DISTFILES += android/AndroidManifest.xml
 
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 }
@@ -35,4 +35,4 @@ android {
 ios { # fixes for Quick Controls Extras 1.4
     QT += gui-private
     LIBS += $$(QTDIR)/qml/QtQuick/Controls/libqtquickcontrolsplugin.a
-    RESOURCES +=     FPZBlowerMonitorConfUI/controls1.qrc }
+    RESOURCES += FPZBlowerMonitorConfUI/controls1.qrc }

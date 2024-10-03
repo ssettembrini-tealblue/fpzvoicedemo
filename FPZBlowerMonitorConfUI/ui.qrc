@@ -123,6 +123,9 @@
         <file>businesscontrols/qmldir</file>
         <file>businesscontrols/CategoryBtn.qml</file>
         <file>businesscontrols/InfoBtn.qml</file>
+		<file>ReadCurrentInverterParamsVoiceTpl.ui.qml</file>
+        <file>businesscontrols/icons/mic-24px.svg</file>
+        <file>businesscontrols/WakewordDetectedIndicator.ui.qml</file>
     </qresource>
     <qresource prefix="/qt-project.org">
         <file>fonts/CourierPrime-Bold.ttf</file>
