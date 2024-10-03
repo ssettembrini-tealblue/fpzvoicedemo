@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>views/ReadInveorParamsView.qml</file>
+        <file>views/ReadInveorParamsVoiceView.qml</file>
     </qresource>
 </RCC>
